@@ -1,0 +1,22 @@
+name: "Hello World"
+description: "Greet someone and record the time"
+inputs:
+  application-name:
+    description: applicationName value for the generated json
+    required: true
+  task-arn:
+    description: ARN of the task definition to deploy
+    required: true
+  deployment-group:
+    description: deploymentGroupName value for the generated json if different from application-name.
+    required: false
+  container-name:
+    description: containerName value for the generated json, if different from application-name.
+    required: false
+outputs:
+  file-name:
+    description: "The name of the generated file"
+
+runs:
+  using: "node16"
+  main: "index.js"

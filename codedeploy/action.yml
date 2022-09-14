@@ -5,6 +5,9 @@ inputs:
   task-arn:
     description: Task to Deploy
     required: true
+  application-name:
+    description: Application Name
+    required: true
   aws-access-key-id:
     description: The AWS access key ID to use for deployment.
     required: true
@@ -14,34 +17,44 @@ inputs:
   cloudformation-role-arn:
     description: The ARN of the Cloudformation role to use for deployment.
     required: true
+  deployment-group:
+    description: Deployment group to deploy to, if different from application-name.
+    required: false
+  container-name:
+    description: Container Name, if different from application-name.
+    required: false
 
 runs:
   using: composite
   steps:
-  - name: Configure AWS credentials
-    # Log in without assuming role first, to get ECR registry name
-    uses: aws-actions/configure-aws-credentials@v1
-    with:
-      aws-access-key-id: ${{ inputs.aws-access-key-id }}
-      aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
-      aws-region: eu-west-1
+    - name: Configure AWS credentials
+      # Log in without assuming role first, to get ECR registry name
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: eu-west-1
 
-  - name: Configure AWS credentials
-    uses: aws-actions/configure-aws-credentials@v1
-    with:
-      aws-region: eu-west-1
-      role-to-assume: ${{ inputs.cloudformation-role-arn }}
-      role-duration-seconds: 900
-      role-skip-session-tagging: true
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: eu-west-1
+        role-to-assume: ${{ inputs.cloudformation-role-arn }}
+        role-duration-seconds: 900
+        role-skip-session-tagging: true
 
-  - name: Create Codedeploy JSON
-    run: node scripts/create-codedeploy.js ${{ inputs.task-arn }}
-    shell: bash
+    - name: Create Codedeploy JSON
+      uses: stampedeapp/actions/create-codedeploy-json@v1.2
+      with:
+        task-arn: ${{ inputs.task-arn }}
+        application-name: ${{ inputs.application-name }}
+        deployment-group: ${{ inputs.deployment-group }}
+        container-name: ${{ inputs.container-name }}
 
-  - name: Validate CodeDeploy
-    run: cat codedeploy.json
-    shell: bash
+    - name: Validate CodeDeploy
+      run: cat codedeploy.json
+      shell: bash
 
-  - name: Deploy
-    shell: bash
-    run: aws deploy create-deployment --cli-input-json file://codedeploy.json --region eu-west-1
+    - name: Deploy
+      shell: bash
+      run: aws deploy create-deployment --cli-input-json file://codedeploy.json --region eu-west-1

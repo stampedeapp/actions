@@ -1,0 +1,13 @@
+{
+  "name": "create-codedeploy-json",
+  "version": "1.0.0",
+  "description": "Action to create a codedeploy file",
+  "main": "index.js",
+  "repository": "https://github.com/stampedeapp/actions",
+  "author": "letsdothis",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@actions/core": "^1.9.1"
+  }
+}
