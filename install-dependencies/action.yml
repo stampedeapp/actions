@@ -38,4 +38,4 @@ runs:
       if: steps.check-cache.outputs.cache-hit != 'true'
       with:
         path: node_modules
-        key: ${{ runner.os }}-yarn-${{ inputs.production }}-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ steps.check-cache.outputs.primary-key }}
