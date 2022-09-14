@@ -3,8 +3,8 @@ description: Deploy stack to Cloudformation
 
 inputs:
   no-execute-changeset:
-    default: 'true'
-    description: 'Do not execute the changeset'
+    default: "true"
+    description: "Do not execute the changeset"
     required: false
   ldt-environment:
     description: The LDT environment name to use for deployment (e.g. 'dev', 'local')
@@ -18,9 +18,6 @@ inputs:
   cloudformation-role-arn:
     description: The ARN of the Cloudformation role to use for deployment.
     required: true
-  s3-path:
-    description: The S3 path to use for static assets.
-    required: true
 
 outputs:
   stack-id:
@@ -32,15 +29,6 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@v2
-
-    - name: Get cached Next.JS build
-      # REMOVEME: Once S3 assets are moved to cloudflare
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.npm
-          ${{ github.workspace }}/.next
-        key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
 
     - name: Configure AWS credentials
       # Log in without assuming role first, to get ECR registry name
@@ -62,18 +50,13 @@ runs:
         role-duration-seconds: 900
         role-skip-session-tagging: true
 
-    - name: Push resources to S3
-      shell: bash
-      # REMOVEME: Once S3 assets are moved to cloudflare
-      run: aws s3 sync .next/static ${{ inputs.s3-path }}/_next/static --acl public-read --exclude "*.map"
-
     - name: Deploy to cloudformation
       id: deploy-to-cloudformation
       uses: stampedeapp/aws-cloudformation-github-deploy@master
       with:
         name: ECS-Service-Web
         template: cloudformation/cloudformation.yaml
-        no-fail-on-empty-changeset: '1'
+        no-fail-on-empty-changeset: "1"
         no-execute-changeset: ${{inputs.no-execute-changeset == 'true' && '1' || '0'}}
         capabilities: CAPABILITY_NAMED_IAM
         parameters-file: configs/${{ inputs.ldt-environment }}.json
