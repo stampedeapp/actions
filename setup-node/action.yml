@@ -1,0 +1,27 @@
+name: Setup Node
+description: Setup node and restore dependencies from cache
+
+inputs:
+  production:
+    description: Whether to use production dependencies
+    default: "false"
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions/cache@v3
+      id: cache
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-yarn-${{ inputs.production }}-${{ hashFiles('**/yarn.lock') }}
+    - name: Use Node.js
+      uses: actions/setup-node@v3.3.0
+      with:
+        node-version-file: ".nvmrc"
+        registry-url: "https://registry.npmjs.org"
+    - name: Ensure cache hit
+      shell: bash
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: echo "Run `install-dependencies` before this action to populate the cache."; exit 1
