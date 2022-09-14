@@ -2,9 +2,6 @@ name: Run Jest
 description: Runs jest tests
 
 inputs:
-  npm-token:
-    description: NPM token
-    required: true
   shard-number:
     description: Shard number
     required: true
