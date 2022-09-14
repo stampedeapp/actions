@@ -13,6 +13,7 @@ inputs:
 runs:
   using: composite
   steps:
+    - uses: actions/checkout@v3
     - uses: hashicorp/setup-terraform@v2
       with:
         cli_config_credentials_token: ${{ inputs.cli_config_credentials_token }}
