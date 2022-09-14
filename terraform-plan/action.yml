@@ -1,0 +1,34 @@
+name: Execute terraform plan
+description: Execute terraform plan
+
+inputs:
+  flags:
+    description: The flags to pass to terraform plan
+    required: false
+    default: ""
+  cli_config_credentials_token:
+    description: The CLI config credentials token to use for deployment.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: hashicorp/setup-terraform@v2
+      with:
+        cli_config_credentials_token: ${{ inputs.cli_config_credentials_token }}
+
+    - name: Terraform Init
+      shell: bash
+      id: init
+      run: terraform init
+
+    - name: Terraform Validate
+      shell: bash
+      id: validate
+      run: terraform validate -no-color
+
+    - name: Terraform Plan
+      id: plan
+      shell: bash
+      run: terraform plan -no-color ${{ inputs.flags }}
+      continue-on-error: true

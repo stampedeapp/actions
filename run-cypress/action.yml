@@ -1,0 +1,91 @@
+name: Run Cypress
+description: Clones the repository, installs dependencies, and runs Cypress.
+
+inputs:
+  e2e-testing-key:
+    description: The SSH key to use for the E2E testing repository.
+    default: ''
+    required: true
+  wait-on:
+    description: The URL to wait on before running Cypress.
+    default: 'http://localhost:3000'
+    required: false
+  cypress-record-key:
+    description: The Cypress record key.
+    default: ''
+    required: true
+  cypress-deploysentinel-key:
+    description: The Cypress deploysentinel key.
+    default: ''
+    required: true
+  doppler-token:
+    description: The Doppler token.
+    default: ''
+    required: true
+  doppler-config:
+    description: The Doppler config to use with -c.
+    default: 'staging'
+    required: true
+  github-token:
+    description: The GitHub token to use for the E2E testing repository.
+    default: ''
+    required: true
+  env:
+    description: The env to run cypress with 
+    default: 'local'
+    required: false
+
+runs:
+    using: composite
+    steps:
+      - name: Checkout E2E testing
+        uses: actions/checkout@v3
+        with:
+          repository: 'stampedeapp/e2e-testing'
+          ref: main
+          path: e2e-testing
+          ssh-key: ${{ inputs.e2e-testing-key }}
+      
+      - name: Install CLI
+        uses: dopplerhq/cli-action@v1
+
+      - name: Setup Environment
+        run: doppler setup --config ${{ inputs.doppler-config }} --project web
+        shell: bash
+        env:
+          DOPPLER_TOKEN: ${{ inputs.doppler-token }}
+
+      # We remove the git info from cypress so that it picks up 
+      # the correct git info from the parent repository - `web`
+      - name: Remove Cypress Git Info
+        shell: bash
+        working-directory: e2e-testing
+        run: rm -rf .git
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v4
+        env:
+          ENV: ${{ inputs.env }}
+          CYPRESS_RECORD_KEY: ${{ inputs.cypress-record-key }}
+          CYPRESS_DEPLOYSENTINEL_KEY: ${{ inputs.cypress-deploysentinel-key }}
+          GITHUB_TOKEN: ${{ inputs.github-token }}
+        with:
+          working-directory: e2e-testing 
+          start: doppler run -- yarn --cwd .. dev
+          wait-on: ${{ inputs.wait-on }}
+          record: true
+          parallel: true
+          browser: chrome
+          headed: true
+          ci-build-id: '${{ github.sha }}-${{ github.workflow }}-${{ github.event_name }}'
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: e2e-testing/cypress/screenshots
+      # Test run video was always captured, so this action uses "always()" condition
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-videos
+          path: e2e-testing/cypress/videos

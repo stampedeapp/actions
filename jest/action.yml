@@ -1,0 +1,43 @@
+name: Run Jest
+description: Runs jest tests
+
+inputs:
+  npm-token:
+    description: NPM token
+    required: true
+  shard-number: 
+    description: Shard number
+    required: true
+  shard-total:
+    description: Total number of shards
+    required: true
+  datadog-api-key:
+    description: Datadog API key
+    required: true
+
+runs:
+    using: composite
+    steps:
+    - uses: ./.github/actions/install-dependencies
+      with:
+        npm-token: ${{ inputs.npm-token }}
+    - name: Run Jest
+      shell: bash
+      run: yarn jest --maxWorkers=2 --shard=${{ inputs.shard-number }}/${{ inputs.shard-total }} --ci --coverage --testLocationInResults --forceExit
+      env:
+        NODE_ENV: test
+        DD_CIVISIBILITY_AGENTLESS_ENABLED: 'true'
+        DD_API_KEY: ${{ inputs.datadog-api-key }}
+        NODE_OPTIONS: '-r dd-trace/ci/init'
+        DD_ENV: ci
+        DD_SERVICE: web
+    - run: rm -rf coverage/lcov-report
+      shell: bash
+    - run: mv coverage/lcov.info coverage/coverage-${{ inputs.shard-number }}.lcov
+      shell: bash
+    - run: mv coverage/coverage-final.json coverage/coverage-final-${{ inputs.shard-number }}.json
+      shell: bash
+    - uses: actions/upload-artifact@v3
+      with:
+        name: coverage-artifacts
+        path: coverage/
