@@ -11,7 +11,7 @@ inputs:
     required: true
   dry-run:
     description: If true, just runs terraform plan
-    default: "true"
+    default: "false"
     required: false
 
 runs:
