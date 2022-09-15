@@ -9,6 +9,10 @@ inputs:
   cli_config_credentials_token:
     description: The CLI config credentials token to use for deployment.
     required: true
+  dry-run:
+    description: If true, just runs terraform plan
+    default: "true"
+    required: false
 
 runs:
   using: composite
@@ -32,4 +36,9 @@ runs:
       id: plan
       shell: bash
       run: terraform plan -no-color ${{ inputs.flags }}
-      continue-on-error: true
+
+    - name: Terraform Apply
+      if: ${{ inputs.dry-run == 'false' }}
+      id: apply
+      shell: bash
+      run: terraform apply -no-color ${{ inputs.flags }}
