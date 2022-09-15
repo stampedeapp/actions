@@ -18,6 +18,9 @@ inputs:
   cloudformation-role-arn:
     description: The ARN of the Cloudformation role to use for deployment.
     required: true
+  container-name:
+    description: Container Name to deploy to
+    required: true
 
 outputs:
   stack-id:
@@ -54,7 +57,7 @@ runs:
       id: deploy-to-cloudformation
       uses: stampedeapp/aws-cloudformation-github-deploy@master
       with:
-        name: ECS-Service-Web
+        name: ECS-Service-${{ inputs.container-name }}
         template: cloudformation/cloudformation.yaml
         no-fail-on-empty-changeset: "1"
         no-execute-changeset: ${{inputs.no-execute-changeset == 'true' && '1' || '0'}}
@@ -63,6 +66,6 @@ runs:
         changeset-postfix: -${{ github.sha }}
         parameter-overrides: |
           ECRImage: ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.ldt-environment }}-${{ github.sha }}
-          ContainerName: Web
+          ContainerName: ${{ inputs.container-name }}
           ALBRulePriority: 1600
           DataDogDeploymentVersion: ${{ github.sha }}
