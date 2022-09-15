@@ -51,4 +51,4 @@ runs:
       if: ${{ inputs.dry-run == 'false' }}
       id: apply
       shell: bash
-      run: terraform apply -no-color ${{ inputs.flags }}
+      run: terraform apply -no-color ${{ inputs.flags }} -auto-approve
