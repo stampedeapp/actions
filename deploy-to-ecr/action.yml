@@ -23,6 +23,9 @@ inputs:
   dockerfile:
     description: The Dockerfile to use for deployment.
     default: Dockerfile
+  image-name:
+    description: The name of the image to use for deployment.
+    default: ${{ github.event.repository.name }}
 
 runs:
   using: composite
@@ -65,7 +68,7 @@ runs:
         builder: ${{ steps.buildx.outputs.name }}
         file: ${{ inputs.dockerfile }}
         push: true
-        tags: ${{ steps.login-ecr.outputs.registry }}/retool:${{ inputs.ldt-environment }}-${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/retool:${{ inputs.ldt-environment }}-latest
+        tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.ldt-environment }}-${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.ldt-environment }}-latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
         build-args: |
