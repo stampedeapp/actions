@@ -8,7 +8,7 @@ try {
 
   const deploymentGroupName = core.getInput("deployment-group", { required: false }) || applicationName;
   const ContainerName = core.getInput("container-name", { required: false }) || applicationName;
-  const fileName = path.join(__dirname, "..", "codedeploy.json");
+  const fileName = path.join(__dirname, "codedeploy.json");
 
   fs.writeFileSync(
     fileName,

@@ -48,7 +48,7 @@ runs:
 
     - name: Deploy
       shell: bash
-      run: aws deploy create-deployment --cli-input-json file://codedeploy.json --region eu-west-1
+      run: aws deploy create-deployment --cli-input-json file://${{ github.workspace }}/codedeploy.json --region eu-west-1
 
     # - name: Wait for deployment
     #   shell: bash
