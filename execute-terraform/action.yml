@@ -33,6 +33,7 @@ runs:
       run: terraform validate -no-color
 
     - name: Terraform Plan
+      if: ${{ inputs.dry-run == 'true' }}
       id: plan
       shell: bash
       run: terraform plan -no-color ${{ inputs.flags }}
