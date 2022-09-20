@@ -44,7 +44,7 @@ runs:
 
     - id: create-json
       name: Create Codedeploy JSON
-      uses: stampedeapp/actions/create-codedeploy-json@v1
+      uses: stampedeapp/actions/create-codedeploy-json@v1.3
       with:
         task-arn: ${{ inputs.task-arn }}
         application-name: ${{ inputs.application-name }}
