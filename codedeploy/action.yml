@@ -23,6 +23,10 @@ inputs:
   container-name:
     description: Container Name, if different from application-name.
     required: false
+  container-port:
+    description: containerPort value for the generated json
+    required: false
+    default: "5001"
 
 runs:
   using: composite
@@ -46,6 +50,7 @@ runs:
         application-name: ${{ inputs.application-name }}
         deployment-group: ${{ inputs.deployment-group }}
         container-name: ${{ inputs.container-name }}
+        container-port: ${{ inputs.container-port }}
 
     - id: deploy
       name: Deploy
