@@ -47,12 +47,13 @@ runs:
         deployment-group: ${{ inputs.deployment-group }}
         container-name: ${{ inputs.container-name }}
 
-    - name: Deploy
+    - id: deploy
+      name: Deploy
       shell: bash
-      run: aws deploy create-deployment --cli-input-json file://${{ steps.create-json.outputs.file-name }} --region eu-west-1
+      run: aws deploy create-deployment --cli-input-json file://${{ steps.create-json.outputs.file-name }} --region eu-west-1 | jq -r '.deploymentId' | echo ::set-output name=deployment-id::$(cat)
 
-    # - name: Wait for deployment
-    #   shell: bash
-    #   run: |
-    #     aws deploy wait deployment-successful --deployment-id ${{ env.DEPLOYMENT_ID }} --region eu-west-1
-    #     aws deploy wait deployment-stopped --deployment-id ${{ env.DEPLOYMENT_ID }} --region eu-west-1
+    - name: Wait for deployment
+      shell: bash
+      run: |
+        aws deploy wait deployment-successful --deployment-id ${{ steps.deploy.outputs.deployment-id }} --region eu-west-1
+        aws deploy wait deployment-stopped --deployment-id ${{ steps.deploy.outputs.deployment-id }} --region eu-west-1
