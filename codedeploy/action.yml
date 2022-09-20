@@ -38,7 +38,8 @@ runs:
         role-duration-seconds: 900
         role-skip-session-tagging: true
 
-    - name: Create Codedeploy JSON
+    - id: create-json
+      name: Create Codedeploy JSON
       uses: stampedeapp/actions/create-codedeploy-json@v1
       with:
         task-arn: ${{ inputs.task-arn }}
@@ -48,7 +49,7 @@ runs:
 
     - name: Deploy
       shell: bash
-      run: aws deploy create-deployment --cli-input-json file://${{ github.workspace }}/codedeploy.json --region eu-west-1
+      run: aws deploy create-deployment --cli-input-json file://${{ steps.create-json.outputs.file-name }} --region eu-west-1
 
     # - name: Wait for deployment
     #   shell: bash
