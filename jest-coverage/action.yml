@@ -1,0 +1,28 @@
+name: Run Jest Coverage Upload
+description: Sends jest coverage to Codeclimate
+
+inputs:
+  code-climate-key:
+    description: Key to use to upload to Code Climate
+    required: true
+
+runs:
+  using: composite
+
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+      with:
+        name: coverage-artifacts
+        path: coverage
+    - uses: paambaati/codeclimate-action@v3.0.0
+      with:
+        coverageLocations: |
+          ${{github.workspace}}/coverage/*.lcov:lcov
+      env:
+        CC_TEST_REPORTER_ID: ${{ inputs.code-climate-key }}
+    - uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: coverage
+        path: coverage

@@ -11,16 +11,11 @@ runs:
   using: composite
   steps:
     - uses: actions/checkout@v3
-    - id: check-cache
-      uses: actions/cache@v3
+    - uses: martijnhols/actions-cache/restore@v3
+      id: cache
       with:
         path: node_modules
         key: ${{ runner.os }}-yarn-${{ inputs.production }}-${{ hashFiles('**/yarn.lock') }}
-    # - uses: martijnhols/actions-cache/restore@v3
-    #   id: cache
-    #   with:
-    #     path: node_modules
-    #     key: ${{ runner.os }}-yarn-${{ inputs.production }}-${{ hashFiles('**/yarn.lock') }}
     - name: Ensure cache hit
       shell: bash
       if: steps.cache.outputs.cache-hit != 'true'
@@ -30,3 +25,6 @@ runs:
       with:
         node-version-file: ".nvmrc"
         registry-url: "https://registry.npmjs.org"
+    - name: Run Yarn
+      shell: bash
+      run: yarn install --frozen-lockfile
