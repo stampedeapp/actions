@@ -6,6 +6,7 @@ try {
   const applicationName = core.getInput("application-name");
   const TaskDefinition = core.getInput("task-arn");
 
+  const ContainerPort = core.getInput("container-port") || 5001;
   const deploymentGroupName = core.getInput("deployment-group", { required: false }) || applicationName;
   const ContainerName = core.getInput("container-name", { required: false }) || applicationName;
   const fileName = path.join(__dirname, "codedeploy.json");
@@ -30,7 +31,7 @@ try {
                       PlatformVersion: "LATEST",
                       LoadBalancerInfo: {
                         ContainerName,
-                        ContainerPort: 5001,
+                        ContainerPort,
                       },
                     },
                   },

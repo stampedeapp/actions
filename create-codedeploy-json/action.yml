@@ -13,6 +13,10 @@ inputs:
   container-name:
     description: containerName value for the generated json, if different from application-name.
     required: false
+  container-port:
+    description: containerPort value for the generated json
+    required: false
+    default: "5001"
 outputs:
   file-name:
     description: "The name of the generated file"
