@@ -17,11 +17,6 @@ runs:
   steps:
     - uses: actions/checkout@v3
     - id: check-cache
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-yarn-${{ inputs.production }}-${{ hashFiles('**/yarn.lock') }}
-    - id: check-cache
       uses: martijnhols/actions-cache/check@v3
       with:
         path: node_modules
