@@ -33,6 +33,7 @@ runs:
         path: /tmp/.buildx-cache
         key: ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}-${{ github.sha }}
         restore-keys: |
+          ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}
           ${{ runner.os }}-multi-buildx
 
     - name: Configure AWS credentials
