@@ -4,10 +4,10 @@ description: Runs jest tests
 inputs:
   shard-number:
     description: Shard number
-    required: true
+    default: "1"
   shard-total:
     description: Total number of shards
-    required: true
+    default: "1"
   datadog-api-key:
     description: Datadog API key
     required: true
