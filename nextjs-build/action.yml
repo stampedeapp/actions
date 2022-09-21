@@ -1,0 +1,28 @@
+name: Next.JS Build
+description: Builds the Next.JS application
+
+runs:
+  using: composite
+  steps:
+    - name: Cache Next.JS build cache
+      uses: actions/cache@v3
+      with:
+        key: |
+          ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]sx?') }}
+        path: |
+          ~/.npm
+          ${{ github.workspace }}/.next/cache
+        restore-keys: |
+          ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
+          ${{ runner.os }}-nextjs-
+          
+    - name: Install Doppler CLI
+      uses: dopplerhq/cli-action@v1
+   
+    - name: Build
+      run: doppler run -- yarn build
+      shell: bash
+      env:
+        # Increase max heap size to make the build run as efficiently as possible
+        NODE_OPTIONS: "--max_old_space_size=4096"
+        DISABLE_ESLINT_TSC_CI: 'true'
