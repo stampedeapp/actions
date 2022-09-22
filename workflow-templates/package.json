@@ -1,0 +1,15 @@
+{
+  "name": "workflow-templates",
+  "version": "1.0.0",
+  "description": "Hygen templates for rubberstamping out workflows",
+  "main": "index.js",
+  "repository": "https://www.github.com/stampedeapp/actions",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "pr": "hygen workflow pr"
+  },
+  "devDependencies": {
+    "hygen": "^6.2.11"
+  }
+}
