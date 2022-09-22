@@ -70,4 +70,5 @@ runs:
         changeset-postfix: -${{ github.sha }}
         parameter-overrides: |
           ECRImage: ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.ldt-environment }}-${{ github.sha }}
+          CommitHash: ${{ github.sha }}
           ${{ inputs.parameter-overrides }}
