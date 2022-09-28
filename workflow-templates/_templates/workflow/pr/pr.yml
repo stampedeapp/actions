@@ -19,8 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: stampedeapp/actions/install-dependencies@lts
-        with:
-          npm-token: ${{ secrets.NPM_READONLY_TOKEN }}
   build:
     name: Build
     runs-on: ubuntu-latest
