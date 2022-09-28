@@ -22,14 +22,14 @@ runs:
         key: ${{ runner.os }}-yarn-${{ inputs.production }}-${{ hashFiles('**/yarn.lock') }}
     - name: Ensure cache hit
       shell: bash
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: ${{ steps.cache.outputs.cache-hit != 'true' && env.NODE_AUTH_TOKEN == '' }}
       run: |
         echo "Could not find cache result for the current workflow."
         echo "This means that something went wrong with the 'install-dependencies' step before this job was run."
         echo "Please re-run the workflow. If the problem continues send the workflow to the platform team."
         exit 1
     - name: Install Dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: ${{ steps.cache.outputs.cache-hit != 'true' &&  env.NODE_AUTH_TOKEN == '' }}
       run: yarn --frozen-lockfile --quiet --production=${{ inputs.production }}
       shell: bash
       env:

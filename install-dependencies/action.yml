@@ -32,7 +32,7 @@ runs:
       run: yarn --frozen-lockfile --quiet --production=${{ inputs.production }}
       shell: bash
       env:
-        NODE_AUTH_TOKEN: ${{ inputs.npm-token }}
+        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN || inputs.npm-token }}
     - uses: martijnhols/actions-cache/save@v3
       id: cache
       if: steps.check-cache.outputs.cache-hit != 'true'
