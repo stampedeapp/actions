@@ -29,7 +29,7 @@ runs:
         echo "Please re-run the workflow. If the problem continues send the workflow to the platform team."
         exit 1
     - name: Install Dependencies
-      if: ${{ steps.cache.outputs.cache-hit != 'true' &&  env.NODE_AUTH_TOKEN == '' }}
+      if: ${{ steps.cache.outputs.cache-hit != 'true' }}
       run: yarn --frozen-lockfile --quiet --production=${{ inputs.production }}
       shell: bash
       env:
