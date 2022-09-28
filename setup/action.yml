@@ -19,7 +19,11 @@ runs:
     - name: Ensure cache hit
       shell: bash
       if: steps.cache.outputs.cache-hit != 'true'
-      run: echo "Run `install-dependencies` before this action to populate the cache."; exit 1
+      run: |
+        echo "Could not find cache result for the current workflow."
+        echo "This means that something went wrong with the 'install-dependencies' step before this job was run."
+        echo "Please re-run the workflow. If the problem continues send the workflow to the platform team."
+        exit 1
     - name: Use Node.js
       uses: actions/setup-node@v3.3.0
       with:
