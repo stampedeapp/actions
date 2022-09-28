@@ -33,7 +33,7 @@ runs:
       run: yarn --frozen-lockfile --quiet --production=${{ inputs.production }}
       shell: bash
       env:
-        NODE_AUTH_TOKEN: ${{ inputs.npm-token }}
+        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN || inputs.npm-token }}
     - name: Use Node.js
       uses: actions/setup-node@v3.3.0
       with:
