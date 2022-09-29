@@ -9,9 +9,8 @@ concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
-defaults:
-  env:
-    NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
 
 jobs:
   install-dependencies:
