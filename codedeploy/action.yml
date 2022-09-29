@@ -28,6 +28,11 @@ inputs:
     required: false
     default: "5001"
 
+outputs:
+  deployment-id:
+    description: The ID of the deployment created by this action.
+    value: ${{ steps.deploy.outputs.deployment-id }}
+
 runs:
   using: composite
   steps:
