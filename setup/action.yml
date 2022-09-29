@@ -2,10 +2,6 @@ name: Setup
 description: Setup node and restore dependencies from cache
 
 inputs:
-  npm-token:
-    description: "NPM token"
-    default: ""
-    required: false
   production:
     description: Whether to use production dependencies
     default: "false"
@@ -38,4 +34,4 @@ runs:
       run: yarn --frozen-lockfile --quiet --production=${{ inputs.production }}
       shell: bash
       env:
-        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN || inputs.npm-token }}
+        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN}}
