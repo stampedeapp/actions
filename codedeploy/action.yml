@@ -66,4 +66,3 @@ runs:
       shell: bash
       run: |
         aws deploy wait deployment-successful --deployment-id ${{ steps.deploy.outputs.deployment-id }} --region eu-west-1
-        aws deploy wait deployment-stopped --deployment-id ${{ steps.deploy.outputs.deployment-id }} --region eu-west-1
