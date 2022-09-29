@@ -33,5 +33,3 @@ runs:
       if: ${{ steps.cache.outputs.cache-hit != 'true' }}
       run: yarn --frozen-lockfile --quiet --production=${{ inputs.production }}
       shell: bash
-      env:
-        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN}}
