@@ -9,14 +9,16 @@ concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
+defaults:
+  env:
+    NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
+
 jobs:
   install-dependencies:
     name: Install Dependencies
     runs-on: ubuntu-latest
     steps:
       - uses: stampedeapp/actions/install-dependencies@lts
-        with:
-          npm-token: ${{ secrets.NPM_READONLY_TOKEN }}
   build:
     name: Build
     runs-on: ubuntu-latest
