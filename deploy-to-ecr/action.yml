@@ -24,11 +24,6 @@ inputs:
     description: The name of the image to use for deployment.
     default: ${{ github.event.repository.name }}
 
-outputs:
-  image:
-    description: The image that was deployed.
-    value: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.ldt-environment }}-${{ github.sha }}
-
 runs:
   using: composite
   steps:
@@ -62,6 +57,11 @@ runs:
       uses: docker/setup-buildx-action@master
       with:
         install: true
+
+    - name: Copy across npmrc
+      shell: bash
+      # Used by some Dockerfiles, can be removed once we move to monorepo
+      run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
 
     - name: Build, tag, and push docker image to Amazon ECR Public
       uses: docker/build-push-action@v3
