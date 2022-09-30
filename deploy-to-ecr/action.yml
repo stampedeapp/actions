@@ -24,6 +24,11 @@ inputs:
     description: The name of the image to use for deployment.
     default: ${{ github.event.repository.name }}
 
+outputs:
+  image:
+    description: The image that was deployed.
+    value: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.ldt-environment }}-${{ github.sha }}
+
 runs:
   using: composite
   steps:
@@ -59,7 +64,7 @@ runs:
         install: true
 
     - name: Build, tag, and push docker image to Amazon ECR Public
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v3
       with:
         context: .
         builder: ${{ steps.buildx.outputs.name }}
