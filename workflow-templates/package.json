@@ -9,7 +9,9 @@
   "scripts": {
     "pr": "hygen workflow pr",
     "pr:overwrite": "HYGEN_OVERWRITE=1 hygen workflow pr",
-    "pr-all": "cat SERVICES | xargs -L 1 yarn pr:overwrite"
+    "pr-all": "cat SERVICES | xargs -L 1 yarn pr:overwrite",
+    "dev": "hygen workflow dev",
+    "dev:overwrite": "HYGEN_OVERWRITE=1 hygen workflow dev"
   },
   "devDependencies": {
     "hygen": "^6.2.11"

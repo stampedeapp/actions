@@ -23,12 +23,7 @@ inputs:
   image-name:
     description: The name of the image to use for deployment.
     default: ${{ github.event.repository.name }}
-
-outputs:
-  image:
-    description: The image that was deployed.
-    value: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.ldt-environment }}-${{ github.sha }}
-
+    
 runs:
   using: composite
   steps:
