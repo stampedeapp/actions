@@ -8,6 +8,8 @@ on:
   push:
     branches:
       - dev
+  workflow_dispatch:
+  repository_dispatch:
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
