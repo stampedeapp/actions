@@ -60,7 +60,7 @@ runs:
     - name: Wait for cloudformation
       shell: bash
       run: |
-        aws cloudformation wait stack-update-complete --stack-name ${{ inputs.stack-name }}
+        aws cloudformation wait stack-update-complete --stack-name ECS-Service-${{ inputs.stack-name }}
 
     - name: Deploy to cloudformation
       id: deploy-to-cloudformation
