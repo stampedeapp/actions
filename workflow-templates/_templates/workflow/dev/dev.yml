@@ -10,6 +10,7 @@ on:
       - dev
   workflow_dispatch:
   repository_dispatch:
+    types: [deploy-dev]
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
