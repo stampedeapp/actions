@@ -57,6 +57,11 @@ runs:
         role-duration-seconds: 900
         role-skip-session-tagging: true
 
+    - name: Wait for cloudformation
+      shell: bash
+      run: |
+        aws cloudformation wait stack-update-complete --stack-name ${{ inputs.stack-name }}
+
     - name: Deploy to cloudformation
       id: deploy-to-cloudformation
       uses: stampedeapp/aws-cloudformation-github-deploy@master
