@@ -24,7 +24,7 @@ runs:
         DD_API_KEY: ${{ inputs.datadog-api-key }}
         NODE_OPTIONS: "-r dd-trace/ci/init"
         DD_ENV: ci
-        DD_SERVICE: web
+        DD_SERVICE: ${{ github.event.repository.name }}
     - run: rm -rf coverage/lcov-report
       shell: bash
     - run: mv coverage/lcov.info coverage/coverage-${{ inputs.shard-number }}.lcov
