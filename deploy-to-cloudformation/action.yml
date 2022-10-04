@@ -5,6 +5,10 @@ inputs:
   stack-name:
     required: true
     description: Name of the Service to make
+  stack-name-prefix:
+    required: false
+    description: Prefix to add to the stack name
+    default: ECS-Service-
   no-execute-changeset:
     default: "true"
     description: "Do not execute the changeset"
@@ -60,13 +64,13 @@ runs:
     - name: Wait for cloudformation
       shell: bash
       run: |
-        aws cloudformation wait stack-update-complete --stack-name ECS-Service-${{ inputs.stack-name }}
+        aws cloudformation wait stack-update-complete --stack-name ${{ inputs.stack-name-prefix }}${{ inputs.stack-name }}
 
     - name: Deploy to cloudformation
       id: deploy-to-cloudformation
       uses: stampedeapp/aws-cloudformation-github-deploy@master
       with:
-        name: ECS-Service-${{ inputs.stack-name }}
+        name: ${{ inputs.stack-name-prefix }}${{ inputs.stack-name }}
         template: cloudformation/cloudformation.yaml
         no-fail-on-empty-changeset: "1"
         no-execute-changeset: ${{inputs.no-execute-changeset == 'true' && '1' || '0'}}
