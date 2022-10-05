@@ -5,6 +5,7 @@ to: ../../<%= name %>/.github/workflows/main.yml
 name: Deploy (main)
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
