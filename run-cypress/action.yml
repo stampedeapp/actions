@@ -8,31 +8,11 @@ inputs:
     required: true
   wait-on:
     description: The URL to wait on before running Cypress.
-    default: 'http://localhost:3000'
+    default: ''
     required: false
-  cypress-record-key:
-    description: The Cypress record key.
+  start:
+    description: Start
     default: ''
-    required: true
-  cypress-deploysentinel-key:
-    description: The Cypress deploysentinel key.
-    default: ''
-    required: true
-  doppler-token:
-    description: The Doppler token.
-    default: ''
-    required: true
-  doppler-config:
-    description: The Doppler config to use with -c.
-    default: 'staging'
-    required: true
-  github-token:
-    description: The GitHub token to use for the E2E testing repository.
-    default: ''
-    required: true
-  env:
-    description: The env to run cypress with 
-    default: 'local'
     required: false
 
 runs:
@@ -45,15 +25,6 @@ runs:
           ref: main
           path: e2e-testing
           ssh-key: ${{ inputs.e2e-testing-key }}
-      
-      - name: Install CLI
-        uses: dopplerhq/cli-action@v1
-
-      - name: Setup Environment
-        run: doppler setup --config ${{ inputs.doppler-config }} --project web
-        shell: bash
-        env:
-          DOPPLER_TOKEN: ${{ inputs.doppler-token }}
 
       # We remove the git info from cypress so that it picks up 
       # the correct git info from the parent repository - `web`
@@ -64,14 +35,10 @@ runs:
 
       - name: Cypress run
         uses: cypress-io/github-action@v4
-        env:
-          ENV: ${{ inputs.env }}
-          CYPRESS_RECORD_KEY: ${{ inputs.cypress-record-key }}
-          CYPRESS_DEPLOYSENTINEL_KEY: ${{ inputs.cypress-deploysentinel-key }}
-          GITHUB_TOKEN: ${{ inputs.github-token }}
+
         with:
           working-directory: e2e-testing 
-          start: doppler run -- yarn --cwd .. dev
+          start: ${{ inputs.start }}
           wait-on: ${{ inputs.wait-on }}
           record: true
           parallel: true
