@@ -46,7 +46,6 @@ jobs:
           code-climate-key: ${{ secrets.CODE_CLIMATE_KEY }}
   deploy-to-ecr-staging:
     name: Build and Deploy to ECR
-    environment: Staging
     needs: install-dependencies
     runs-on: ubuntu-latest
     steps:
@@ -61,7 +60,6 @@ jobs:
           docker-hub-password: ${{ secrets.DOCKER_PASSWORD }}
   deploy-to-ecr-production:
     name: Build and Deploy to ECR
-    environment: Production
     needs: install-dependencies
     runs-on: ubuntu-latest
     steps:

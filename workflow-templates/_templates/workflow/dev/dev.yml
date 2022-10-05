@@ -47,7 +47,6 @@ jobs:
           code-climate-key: ${{ secrets.CODE_CLIMATE_KEY }}
   deploy-to-ecr:
     name: Build and Deploy to ECR
-    environment: Development
     needs: install-dependencies
     runs-on: ubuntu-latest
     steps:
