@@ -71,7 +71,7 @@ jobs:
       - lint
       - jest
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3.1.0
       - uses: stampedeapp/actions/deploy-to-cloudformation@lts
         with:
           stack-name: <%= stack %>
