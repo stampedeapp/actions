@@ -1,0 +1,26 @@
+name: Sourcegraph
+description: Send sourcegraph info
+
+inputs:
+  production:
+    description: Whether to use production dependencies
+    default: "false"
+    required: false
+
+runs:
+  using: composite
+  steps:
+  - name: Checkout
+    uses: actions/checkout@v3.1.0
+
+  - name: Generate LSIF data
+    shell: bash
+    run: npx @sourcegraph/lsif-tsc -p .
+
+  - name: Upload LSIF data
+    uses: docker://sourcegraph/src-cli:latest
+    env:
+      SRC_ENDPOINT: https://sourcegraph.letsdothis.com
+      SRC_ACCESS_TOKEN: ${{ env.SOURCEGRAPH_ACCESS_TOKEN }}
+    with:
+      args: lsif upload -repo=github.com/${{ github.repository }}
