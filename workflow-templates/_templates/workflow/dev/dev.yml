@@ -2,7 +2,7 @@
 to: ../../<%= name %>/.github/workflows/dev.yml
 ---
 
-name: Deploy (dev)
+name: Deploy (<%= name %> dev)
 
 on:
   push:

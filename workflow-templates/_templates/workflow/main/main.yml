@@ -2,7 +2,7 @@
 to: ../../<%= name %>/.github/workflows/main.yml
 ---
 
-name: Deploy (main)
+name: Deploy (<%= name %> main)
 
 on:
   workflow_dispatch:
@@ -85,7 +85,6 @@ jobs:
       - typecheck
       - jest
     steps:
-      - uses: actions/checkout@v3.1.0
       - uses: stampedeapp/actions/deploy-to-cloudformation@lts
         with:
           stack-name: <%= stack %>
