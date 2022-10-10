@@ -1,0 +1,11 @@
+# CODESTEWARDS
+#
+# At LDT, we have code stewards rather than code owners.
+# https://www.notion.so/letsdothis1/Code-Stewardship-model-451ba368bb1b45c5942309ab539593e3
+#
+# Code stewards are not gatekeepers, they just give a degree of oversight over
+# a codebase. We use the CODEOWNERS filename because github uses it to ping
+# people regarding code changes.
+
+* @stampedeapp/platform
+
