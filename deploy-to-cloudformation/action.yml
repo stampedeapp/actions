@@ -73,6 +73,6 @@ runs:
         parameters-file: configs/${{ inputs.ldt-environment }}.json
         changeset-postfix: -${{ github.sha }}
         parameter-overrides: |
-          ECRImage: ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.ldt-environment }}-${{ github.sha }}
+          ECRImage: ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.ldt-environment }}-${{ github.sha }}-${{ github.run_attempt }}
           CommitHash: ${{ github.sha }}
           ${{ inputs.parameter-overrides }}
