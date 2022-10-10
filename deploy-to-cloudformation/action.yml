@@ -61,6 +61,10 @@ runs:
         role-duration-seconds: 900
         role-skip-session-tagging: true
 
+    - name: Validate Image
+      shell: bash
+      run: docker manifest inspect ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.ldt-environment }}-${{ github.sha }}-${{ github.run_attempt }} > /dev/null ; echo $?
+
     - name: Deploy to cloudformation
       id: deploy-to-cloudformation
       uses: stampedeapp/aws-cloudformation-github-deploy@master
