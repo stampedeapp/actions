@@ -23,6 +23,9 @@ inputs:
   image-name:
     description: The name of the image to use for deployment.
     default: ${{ github.event.repository.name }}
+  github-sha:
+    description: The SHA of the commit to use for deployment.
+    default: ${{ github.sha }}
     
 runs:
   using: composite
@@ -31,7 +34,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}-${{ github.sha }}
+        key: ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
         restore-keys: |
           ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}
 
@@ -64,12 +67,12 @@ runs:
         context: .
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.ldt-environment }}-${{ github.sha }}
+        tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
         build-args: |
           NPM_TOKEN=${{ inputs.npm-token }}
-          COMMIT_HASH=${{ github.sha }}
+          COMMIT_HASH=${{ inputs.github-sha }}
     - name: Move cache
       shell: bash
       run: |
