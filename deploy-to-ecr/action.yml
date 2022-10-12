@@ -25,6 +25,7 @@ inputs:
     default: ${{ github.event.repository.name }}
   github-sha:
     description: The SHA of the commit to use for deployment.
+    required: false
     default: ${{ github.sha }}
     
 runs:

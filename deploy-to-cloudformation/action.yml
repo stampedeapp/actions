@@ -29,6 +29,10 @@ inputs:
     description: Any additional parameter overrides for the workflow 
     required: false
     default: ""
+  github-sha:
+    description: The SHA of the commit to use for deployment.
+    required: false
+    default: ${{ github.sha }}
 
 outputs:
   stack-id:
@@ -71,8 +75,8 @@ runs:
         no-execute-changeset: ${{inputs.no-execute-changeset == 'true' && '1' || '0'}}
         capabilities: CAPABILITY_NAMED_IAM
         parameters-file: configs/${{ inputs.ldt-environment }}.json
-        changeset-postfix: -${{ github.sha }}
+        changeset-postfix: -${{ inputs.github-sha }}
         parameter-overrides: |
-          ECRImage: ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.ldt-environment }}-${{ github.sha }}
-          CommitHash: ${{ github.sha }}
+          ECRImage: ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
+          CommitHash: ${{ inputs.github-sha }}
           ${{ inputs.parameter-overrides }}
