@@ -46,7 +46,7 @@ jobs:
         with:
           code-climate-key: ${{ secrets.CODE_CLIMATE_KEY }}
   deploy-to-ecr-staging:
-    name: Build and Deploy to ECR
+    name: Build and Deploy to ECR (Staging)
     needs: install-dependencies
     runs-on: ubuntu-latest
     steps:
@@ -60,7 +60,7 @@ jobs:
           docker-hub-username: ${{ secrets.DOCKER_USERNAME }}
           docker-hub-password: ${{ secrets.DOCKER_PASSWORD }}
   deploy-to-ecr-production:
-    name: Build and Deploy to ECR
+    name: Build and Deploy to ECR (Production)
     needs: install-dependencies
     runs-on: ubuntu-latest
     steps:
@@ -74,7 +74,7 @@ jobs:
           docker-hub-username: ${{ secrets.DOCKER_USERNAME }}
           docker-hub-password: ${{ secrets.DOCKER_PASSWORD }}
   create-changeset-staging:
-    name: Create changeset
+    name: Create changeset (Staging)
     runs-on: ubuntu-latest
     environment: Staging
     concurrency:
@@ -94,7 +94,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           cloudformation-role-arn: ${{ secrets.CLOUDFORMATION_ROLE_ARN }}
   create-changeset-production:
-    name: Create changeset
+    name: Create changeset (Production)
     runs-on: ubuntu-latest
     environment: Production
     concurrency:
