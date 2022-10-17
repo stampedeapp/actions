@@ -33,6 +33,10 @@ runs:
         working-directory: e2e-testing
         run: rm -rf .git
 
+      - name: Log CI Run ID
+        shell: bash
+        run: echo '${{ github.repository} }}-${{ github.workflow }}-${{ github.sha }}-${{ github.run_attempt }}'
+
       - name: Cypress run
         uses: cypress-io/github-action@v4
 
@@ -44,7 +48,7 @@ runs:
           parallel: true
           browser: chrome
           headed: true
-          ci-build-id: '${{ github.sha }}-${{ github.workflow }}-${{ github.event_name }}'
+          ci-build-id: '${{ github.repository} }}-${{ github.workflow }}-${{ github.sha }}-${{ github.run_attempt }}'
       - uses: actions/upload-artifact@v2
         if: failure()
         with:
