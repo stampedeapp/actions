@@ -21,5 +21,8 @@ runs:
           printf '%s' "$RESPONSE" | grep "Not Found" || echo "reason=$(printf '%s' "$RESPONSE" | jq -r '.content' | base64 -d)" >> $GITHUB_OUTPUT
       - name: Fail if file exists
         if: steps.check-file.outputs.reason != ''
-        shell: bash
-        run: echo "::setFailed::Code freeze is in effect with reason ${{ steps.check-file.outputs.reason }}."
+        run: |
+          echo "Workflow failed due to code freeze in effect (${{ steps.check-file.outputs.reason }})" >> $GITHUB_STEP_SUMMARY
+          echo "::error::Workflow failed due to code freeze in effect (${{ steps.check-file.outputs.reason }})"
+          echo "Code freeze is in effect with reason ${{ steps.check-file.outputs.reason }}."
+          exit 1
