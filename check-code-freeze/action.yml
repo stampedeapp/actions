@@ -1,4 +1,5 @@
-name: Run Cypress
+name: Check code freeze
+
 description: Clones the repository, installs dependencies, and runs Cypress.
 
 inputs:
