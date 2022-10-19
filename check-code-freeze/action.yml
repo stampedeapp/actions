@@ -23,6 +23,6 @@ runs:
         if: steps.check-file.outputs.reason != ''
         shell: bash
         run: |
-          echo "Workflow failed due to code freeze in effect" >> $GITHUB_STEP_SUMMARY
+          echo "Workflow failed due to code freeze in effect (${{ steps.check-file.outputs.reason }})" >> $GITHUB_STEP_SUMMARY
           echo "Code freeze is in effect with reason ${{ steps.check-file.outputs.reason }}."
           exit 1
