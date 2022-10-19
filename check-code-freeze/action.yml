@@ -13,4 +13,4 @@ runs:
     steps:
       - name: Check if file exists
         shell: bash
-        run: 'curl -H "Authorization: Bearer ${{ inputs.github-token }}" -H "Accept: application/vnd.github+json" https://api.github.com/repos/stampedeapp/freeze/contents/freeze'
+        run: 'curl -H "Authorization: Bearer ${{ inputs.github-token }}" -H "Accept: application/vnd.github+json" https://api.github.com/repos/stampedeapp/freeze/contents/freeze | grep "Not Found"'
