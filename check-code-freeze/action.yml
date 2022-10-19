@@ -1,0 +1,16 @@
+name: Run Cypress
+description: Clones the repository, installs dependencies, and runs Cypress.
+
+inputs:
+  github-token:
+    description: The GitHub token to use for accesing the Github API
+    default: ''
+    required: true
+
+runs:
+    using: composite
+
+    steps:
+      - name: Check if file exists
+        shell: bash
+        run: 'curl -H "Authorization: Bearer ${{ inputs.github-token }}" -H "Accept: application/vnd.github+json" https://api.github.com/repos/stampedeapp/freeze/contents/freeze'
