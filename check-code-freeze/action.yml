@@ -15,7 +15,9 @@ runs:
         id: check-file
         shell: bash
         run: |
-          export RESPONSE = curl -H "Authorization: Bearer ${{ inputs.github-token }}" -H "Accept: application/vnd.github+json" https://api.github.com/repos/stampedeapp/freeze/contents/freeze
+          export RESPONSE=$(
+            curl -H "Authorization: Bearer ${{ inputs.github-token }}" -H "Accept: application/vnd.github+json" https://api.github.com/repos/stampedeapp/freeze/contents/freeze
+          )
           grep $RESPONSE "Not Found" || echo "reason=$(echo $RESPONSE | jq -r 'content' | base64 -d)" >> $GITHUB_OUTPUT
       - name: Fail if file exists
         if: steps.check-file.outputs.reason != ''
