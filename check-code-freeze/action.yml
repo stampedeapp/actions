@@ -1,6 +1,6 @@
 name: Check code freeze
 
-description: Clones the repository, installs dependencies, and runs Cypress.
+description: Fails the build if a code freeze is currently active.
 
 inputs:
   github-token:
