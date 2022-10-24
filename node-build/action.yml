@@ -1,5 +1,5 @@
 name: Node Build
-description: Runs node build and gets prod dependencies
+description: Runs node build and prunes dependencies
 
 runs:
   using: composite
