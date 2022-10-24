@@ -1,0 +1,16 @@
+name: Node Build
+description: Runs node build and prunes dependencies
+
+runs:
+  using: composite
+  steps:
+    - uses: stampedeapp/actions/setup@lts
+    - name: Build
+      run: yarn build
+      shell: bash
+    - name: Clean up dev dependencies
+      shell: bash
+      run: npm prune --omit=dev --legacy-peer-deps # Yarn doesn't have a good version of this.
+    - name: Clear yarn cache
+      shell: bash
+      run: yarn cache clean
