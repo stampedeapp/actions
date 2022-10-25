@@ -29,10 +29,10 @@ jobs:
       - uses: stampedeapp/actions/setup@lts
       - run: yarn lint
   jest:
-    name: Jest Test
+    name: Jest
     runs-on: ubuntu-latest
     needs: install-dependencies
     steps:
       - uses: stampedeapp/actions/setup@lts
       - uses: stampedeapp/actions/jest@lts
-      - uses: stampedeapp/actions/jest-coverage@lts
+      - uses: stampedeapp/actions/jest-coverage@wip
