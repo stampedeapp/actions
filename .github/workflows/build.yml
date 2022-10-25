@@ -18,8 +18,8 @@ jobs:
     name: Build and Push (${{ inputs.ldt-environment }})
     runs-on: ubuntu-latest
     steps:
-      - uses: stampedeapp/actions/setup@lts
-      - uses: stampedeapp/actions/deploy-to-ecr@lts
+      - uses: stampedeapp/actions/setup@main
+      - uses: stampedeapp/actions/deploy-to-ecr@main
         with:
           ldt-environment: ${{ inputs.ldt-environment }}
           npm-token: ${{ secrets.NPM_READONLY_TOKEN }}

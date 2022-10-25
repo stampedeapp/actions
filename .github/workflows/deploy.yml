@@ -22,10 +22,10 @@ jobs:
     concurrency:
       group: cloudformation-${{ inputs.ldt-environment }}
     steps:
-      - uses: stampedeapp/actions/check-code-freeze@lts
+      - uses: stampedeapp/actions/check-code-freeze@main
         with:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
-      - uses: stampedeapp/actions/deploy-to-cloudformation@lts
+      - uses: stampedeapp/actions/deploy-to-cloudformation@main
         with:
           stack-name: GraphQL
           no-execute-changeset: false
