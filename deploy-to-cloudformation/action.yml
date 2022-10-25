@@ -1,5 +1,5 @@
 name: Deploy stack to Cloudformation
-description: Deploy stack to Cloudformation
+description: Deploy stack to Cloudformation. Deprecated, use deploy-to-cloudformation-cli instead.
 
 inputs:
   stack-name:

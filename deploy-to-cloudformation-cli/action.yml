@@ -1,0 +1,77 @@
+name: Deploy stack to Cloudformation
+description: Deploy stack to Cloudformation
+
+inputs:
+  stack-name:
+    required: true
+    description: Name of the stack to update
+  ldt-environment:
+    description: The LDT environment name to use for deployment (e.g. 'dev', 'local')
+    required: true
+  github-sha:
+    description: The SHA of the commit to use for deployment.
+    required: false
+    default: ${{ github.sha }}
+  extra-flags:
+    required: false
+    description: Extra flags to pass to the deploy command
+    default: ""
+  region:
+    required: false
+    description: The AWS region to use for deployment.
+    default: eu-west-1
+
+outputs:
+  stack-id:
+    description: The ID of the created stack
+    value: ${{ steps.deploy-to-cloudformation.outputs.stack-id }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout files
+      uses: Bhacaz/checkout-files@v2
+      with:
+        files: cloudformation/cloudformation.yaml configs/${{ inputs.ldt-environment }}.json
+        branch: ${{ github.head_ref || github.ref_name }}
+      
+    - name: Configure AWS credentials
+      # Log in without assuming role first, to get ECR registry name
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: eu-west-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: eu-west-1
+        role-to-assume: ${{ env.CLOUDFORMATION_ROLE_ARN }}
+        role-duration-seconds: 900
+        role-skip-session-tagging: true
+
+    - name: Deploy to cloudformation
+      shell: bash
+      id: deploy-to-cloudformation
+      run: |
+        aws cloudformation deploy \
+          --stack-name ${{ inputs.stack-name }} \
+          --template-file cloudformation/cloudformation.yaml \
+          --capabilities CAPABILITY_NAMED_IAM \
+          --parameter-overrides \
+            $(cat configs/${{ inputs.ldt-environment }}.json | jq -r '.Parameters | to_entries[] | "\(.key)=\(.value)"') \
+            ECRImage=${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.ldt-environment }}-${{ inputs.github-sha }} \
+            CommitHash=${{ inputs.github-sha }} \
+            ${{ inputs.extra-flags }}
+
+    - name: Describe failure
+      shell: bash
+      if: ${{ steps.deploy-to-cloudformation.outcome == 'failure' }}
+      run: |
+        aws cloudformation describe-stack-events
+          --stack-name ${{ inputs.stack-name }}
+          --query 'StackEvents[?ResourceStatus==`CREATE_FAILED`].ResourceStatusReason'
+          --output text
