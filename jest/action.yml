@@ -9,8 +9,8 @@ inputs:
     description: Total number of shards
     default: "1"
   datadog-api-key:
-    description: Datadog API key
-    default: ${{ env.DATADOG_API_KEY }}
+    description: Datadog API key. Uses env.DATADOG_API_KEY if not set
+    default: ''
 
 runs:
   using: composite
@@ -21,7 +21,7 @@ runs:
       env:
         NODE_ENV: test
         DD_CIVISIBILITY_AGENTLESS_ENABLED: "true"
-        DD_API_KEY: ${{ inputs.datadog-api-key }}
+        DD_API_KEY: ${{ inputs.datadog-api-key == '' && env.DATADOG_API_KEY || inputs.datadog-api-key }}
         NODE_OPTIONS: "-r dd-trace/ci/init"
         DD_ENV: ci
         DD_SERVICE: ${{ github.event.repository.name }}

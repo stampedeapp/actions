@@ -3,8 +3,8 @@ description: Sends jest coverage to Codeclimate
 
 inputs:
   code-climate-key:
-    description: Key to use to upload to Code Climate
-    default: ${{ env.CODE_CLIMATE_KEY }}
+    description: Key to use to upload to Code Climate. Uses env.CC_TEST_REPORTER_ID if not set
+    default: ''
 
 runs:
   using: composite
@@ -19,7 +19,7 @@ runs:
         coverageLocations: |
           ${{github.workspace}}/coverage/*.lcov:lcov
       env:
-        CC_TEST_REPORTER_ID: ${{ inputs.code-climate-key }}
+        CC_TEST_REPORTER_ID: ${{ inputs.code-climate-key == '' && env.CC_TEST_REPORTER_ID || inputs.code-climate-key }}
     - uses: actions/upload-artifact@v2
       if: always()
       with:

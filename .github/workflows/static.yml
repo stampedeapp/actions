@@ -34,5 +34,5 @@ jobs:
     needs: install-dependencies
     steps:
       - uses: stampedeapp/actions/setup@lts
-      - uses: stampedeapp/actions/jest@lts
+      - uses: stampedeapp/actions/jest@wip
       - uses: stampedeapp/actions/jest-coverage@wip
