@@ -9,29 +9,18 @@ env:
   CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_KEY }}
 
 jobs:
-  install-dependencies:
-    name: Install Dependencies
-    runs-on: ubuntu-latest
-    steps:
-      - uses: stampedeapp/actions/install-dependencies@main
   build:
-    name: Build
     runs-on: ubuntu-latest
-    needs: install-dependencies
     steps:
       - uses: stampedeapp/actions/setup@main
       - run: yarn build
   lint:
-    name: Lint
     runs-on: ubuntu-latest
-    needs: install-dependencies
     steps:
       - uses: stampedeapp/actions/setup@main
       - run: yarn lint
   jest:
-    name: Jest
     runs-on: ubuntu-latest
-    needs: install-dependencies
     steps:
       - uses: stampedeapp/actions/setup@main
       - uses: stampedeapp/actions/jest@main

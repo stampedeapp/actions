@@ -14,8 +14,7 @@ on:
         default: 'false'
 
 jobs:
-  deploy-to-ecr:
-    name: Build and Push (${{ inputs.ldt-environment }})
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: stampedeapp/actions/setup@main

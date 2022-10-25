@@ -5,7 +5,6 @@ on:
 
 jobs:
   e2e-testing:
-    name: E2E Testing
     runs-on: ubuntu-latest
     container: cypress/browsers:node16.17.0-chrome106
     needs: create-changeset-staging
