@@ -10,7 +10,7 @@ inputs:
     default: "1"
   datadog-api-key:
     description: Datadog API key
-    required: true
+    default: ${{ secrets.DATADOG_API_KEY }}
 
 runs:
   using: composite

@@ -4,7 +4,7 @@ description: Sends jest coverage to Codeclimate
 inputs:
   code-climate-key:
     description: Key to use to upload to Code Climate
-    required: true
+    default: ${{ env.CODE_CLIMATE_KEY }}
 
 runs:
   using: composite
