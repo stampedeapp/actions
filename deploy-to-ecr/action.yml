@@ -54,9 +54,8 @@ runs:
 
     - name: Exit if image already exists
       id: check-image-exists
-      if: ${{ inputs.reuse-image == 'true' }}
       continue-on-error: true
-      run:  aws ecr describe-images --repository-name ${{ inputs.image-name }} --image-ids imageTag=${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
+      run: ${{ inputs.reuse-image }} || aws ecr describe-images --repository-name ${{ inputs.image-name }} --image-ids imageTag=${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
       shell: bash
 
     - name: Set up Docker Buildx
@@ -68,7 +67,6 @@ runs:
 
     - name: Cache Docker layers
       uses: actions/cache@v3
-      if: steps.buildx.outcome != 'skipped'
       with:
         path: /tmp/.buildx-cache
         key: ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
@@ -77,7 +75,6 @@ runs:
   
     - name: Build, tag, and push docker image to Amazon ECR Public
       uses: docker/build-push-action@v3
-      if: steps.buildx.outcome != 'skipped'
       with:
         context: .
         builder: ${{ steps.buildx.outputs.name }}
@@ -90,7 +87,6 @@ runs:
           COMMIT_HASH=${{ inputs.github-sha }}
     - name: Move cache
       shell: bash
-      if: steps.buildx.outcome != 'skipped'
       run: |
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
