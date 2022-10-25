@@ -1,4 +1,4 @@
-name: Static
+name: Deploy
 
 on:
   workflow_call:
@@ -16,7 +16,7 @@ on:
 
 jobs:
   deploy:
-    name: Build (${{ inputs.ldt-environment }})
+    name: Deploy (${{ inputs.ldt-environment }})
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     concurrency:
