@@ -2,6 +2,17 @@ name: Static
 
 on:
   workflow_call:
+    inputs:
+      should-build:
+        type: boolean
+        description: Should we build the project?
+        required: false
+        default: true
+      should-typecheck:
+        type: boolean
+        description: Should we run tsc?
+        required: false
+        default: false
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
@@ -11,9 +22,16 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: should-build
     steps:
       - uses: stampedeapp/actions/setup@main
       - run: yarn build
+  typecheck:
+    runs-on: ubuntu-latest
+    if: should-typecheck
+    steps:
+      - uses: stampedeapp/actions/setup@main
+      - run: yarn tsc
   lint:
     runs-on: ubuntu-latest
     steps:
