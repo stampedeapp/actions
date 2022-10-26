@@ -1,5 +1,5 @@
 name: Node Build
-description: Runs node build and prunes dependencies
+description: Runs yarn build and prunes dev dependencies
 
 runs:
   using: composite
