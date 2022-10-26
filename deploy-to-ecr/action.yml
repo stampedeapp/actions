@@ -59,13 +59,15 @@ runs:
       shell: bash
 
     - name: Set up Docker Buildx
-      if: ${{ inputs.reuse-image == 'false' || steps.check-image-exists.outcome == 'failure' }}
+      if: ${{ always() && (inputs.reuse-image == 'false' || steps.check-image-exists.outcome == 'failure') }}
       id: buildx
       uses: docker/setup-buildx-action@master
       with:
         install: true
 
     - name: Cache Docker layers
+      id: cache-docker
+      if: ${{ always() && steps.buildx.outcome == 'success' }}
       uses: actions/cache@v3
       with:
         path: /tmp/.buildx-cache
@@ -74,6 +76,8 @@ runs:
           ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}
   
     - name: Build, tag, and push docker image to Amazon ECR Public
+      id: build-push
+      if: ${{ always() && steps.cache-docker.outcome == 'success' }}
       uses: docker/build-push-action@v3
       with:
         context: .
@@ -86,6 +90,7 @@ runs:
           NPM_TOKEN=${{ inputs.npm-token }}
           COMMIT_HASH=${{ inputs.github-sha }}
     - name: Move cache
+      if: ${{ always() && steps.build-push.outcome == 'success' }}
       shell: bash
       run: |
         rm -rf /tmp/.buildx-cache
