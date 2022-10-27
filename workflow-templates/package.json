@@ -15,7 +15,7 @@
     "main:overwrite": "HYGEN_OVERWRITE=1 hygen workflow main",
     "emergency": "hygen workflow emergency",
     "emergency:overwrite": "HYGEN_OVERWRITE=1 hygen workflow emergency",
-    "all": "HYGEN_OVERWRITE=1 yarn pr && yarn dev && yarn main && yarn emergency"
+    "all": "x() { yarn pr:overwrite $*; yarn dev:overwrite $*; yarn main:overwrite $*; yarn emergency:overwrite $*; }; x"
   },
   "devDependencies": {
     "hygen": "^6.2.11"

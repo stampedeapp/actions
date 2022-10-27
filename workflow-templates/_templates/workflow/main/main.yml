@@ -2,6 +2,8 @@
 to: ../../<%= name %>/.github/workflows/main.yml
 ---
 
+name: Deploy (<%= name %>)
+
 on:
   workflow_dispatch:
   push:

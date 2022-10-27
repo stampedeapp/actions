@@ -1,8 +1,8 @@
 ---
-to: ../../<%= name %>/.github/workflows/dev.yml
+to: ../../<%= name %>/.github/workflows/emergency_deploy.yml
 ---
 
-name: Dev (<%= name %>)
+name: Emergency Deployment (<%= name %>)
 
 on:
   workflow_dispatch:
