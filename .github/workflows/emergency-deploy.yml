@@ -50,9 +50,7 @@ jobs:
   execute-changeset:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    needs:
-      - static
-      - build
+    needs: build
     concurrency:
       group: cloudformation-${{ inputs.ldt-environment }}
     steps:
