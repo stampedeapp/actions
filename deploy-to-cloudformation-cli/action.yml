@@ -71,7 +71,7 @@ runs:
       shell: bash
       if: ${{ always() && steps.deploy-to-cloudformation.outcome == 'failure' }}
       run: |
-        aws cloudformation describe-stack-events
-          --stack-name ${{ inputs.stack-name }}
-          --query 'StackEvents[?ResourceStatus==`CREATE_FAILED`].ResourceStatusReason'
+        aws cloudformation describe-stack-events \
+          --stack-name ${{ inputs.stack-name }} \
+          --query 'StackEvents[?ResourceStatus==`CREATE_FAILED`].ResourceStatusReason' \
           --output text
