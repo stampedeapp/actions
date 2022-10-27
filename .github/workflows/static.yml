@@ -1,0 +1,27 @@
+name: Static
+
+on:
+  workflow_call:
+
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
+  DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+  CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_KEY }}
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: stampedeapp/actions/setup@main
+      - run: yarn tsc
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: stampedeapp/actions/setup@main
+      - run: yarn lint
+  jest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: stampedeapp/actions/setup@main
+      - uses: stampedeapp/actions/jest@main
+      - uses: stampedeapp/actions/jest-coverage@main
