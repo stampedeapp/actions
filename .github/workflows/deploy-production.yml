@@ -101,7 +101,7 @@ jobs:
     needs:
       - build-production
       - e2e-testing
-    if: ${{ (inputs.run-e2e-tests == 'true' && needs.e2e-testing.result == 'success') && (needs.build-production.result == 'success') }}
+    if: ${{ always() && (inputs.run-e2e-tests == 'false' || needs.e2e-testing.result == 'success') && (needs.build-production.result == 'success') }}
     concurrency:
       group: cloudformation-production
     steps:
