@@ -39,7 +39,7 @@ runs:
       # Log in without assuming role first, to get ECR registry name
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-region: eu-west-1
+        aws-region: ${{ inputs.region }}
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -48,7 +48,7 @@ runs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-region: eu-west-1
+        aws-region: ${{ inputs.region }}
         role-to-assume: ${{ env.CLOUDFORMATION_ROLE_ARN }}
         role-duration-seconds: 900
         role-skip-session-tagging: true
