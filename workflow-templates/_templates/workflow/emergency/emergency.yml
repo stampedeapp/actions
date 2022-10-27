@@ -1,0 +1,24 @@
+---
+to: ../../<%= name %>/.github/workflows/dev.yml
+---
+
+name: Dev (<%= name %>)
+
+on:
+  workflow_dispatch:
+    inputs:
+      reuse-image:
+        description: 'Try to reuse previously built image?'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  ci:
+    uses: stampedeapp/actions/.github/workflows/emergency-deploy.yml@main
+    secrets: inherit
+    with:
+      environment: Development
+      ldt-environment: dev
+      stack-name: <%= stack %>
+      reuse-image: ${{ github.event.inputs.reuse-image == 'true' }}
