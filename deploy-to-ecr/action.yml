@@ -55,7 +55,7 @@ runs:
     - name: Exit if image already exists
       id: check-image-exists
       continue-on-error: true
-      run: ${{ inputs.reuse-image }} || aws ecr describe-images --repository-name ${{ inputs.image-name }} --image-ids imageTag=${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
+      run: ${{ inputs.reuse-image == 'false' }} || aws ecr describe-images --repository-name ${{ inputs.image-name }} --image-ids imageTag=${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
       shell: bash
 
     - name: Set up Docker Buildx
