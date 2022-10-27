@@ -69,7 +69,7 @@ runs:
 
     - name: Describe failure
       shell: bash
-      if: ${{ steps.deploy-to-cloudformation.outcome == 'failure' }}
+      if: ${{ always() && steps.deploy-to-cloudformation.outcome == 'failure' }}
       run: |
         aws cloudformation describe-stack-events
           --stack-name ${{ inputs.stack-name }}
