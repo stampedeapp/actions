@@ -111,4 +111,4 @@ jobs:
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
           stack-name: ${{ inputs.stack-name }}
-          ldt-environment: production
+          ldt-environment: prod
