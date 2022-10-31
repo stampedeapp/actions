@@ -44,7 +44,8 @@ jobs:
             -d @- <<PAYLOAD
               {
                 "text": "An emergency deployment has been triggered on ${{ github.event.repository.name }} by ${{ github.triggering_actor }} with commit SHA ${{ github.sha }}.",
-                "icon_emoji": ":rotating_light:",
+                "icon_emoji": ":rotating_light:"
+              }
           PAYLOAD
 
   build:
