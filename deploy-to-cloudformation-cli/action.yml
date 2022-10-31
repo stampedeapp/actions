@@ -50,7 +50,7 @@ runs:
       with:
         aws-region: ${{ inputs.region }}
         role-to-assume: ${{ env.CLOUDFORMATION_ROLE_ARN }}
-        role-duration-seconds: 900
+        role-duration-seconds: 1200
         role-skip-session-tagging: true
 
     - name: Deploy to cloudformation
