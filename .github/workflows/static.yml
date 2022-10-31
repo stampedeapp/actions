@@ -31,8 +31,8 @@ jobs:
   jest:
     runs-on: ubuntu-latest
     steps:
+      - uses: stampedeapp/actions/setup@main
       - run: ${{ inputs.setup-step }}
         if: ${{ inputs.setup-step != '' }}
-      - uses: stampedeapp/actions/setup@main
       - uses: stampedeapp/actions/jest@main
       - uses: stampedeapp/actions/jest-coverage@main
