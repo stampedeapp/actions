@@ -21,6 +21,11 @@ on:
         description: SHA of the commit to use for deployment
         required: false
         default: ${{ github.sha }}
+      test-setup-command:
+        type: string
+        description: Command to run to setup the test environment
+        required: false
+        default: ''
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
@@ -38,6 +43,8 @@ jobs:
     uses: stampedeapp/actions/.github/workflows/static.yml@main
     needs: install
     secrets: inherit
+    with:
+      test-setup-command: ${{ inputs.test-setup-command }}
 
   build:
     runs-on: ubuntu-latest

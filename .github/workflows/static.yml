@@ -2,6 +2,12 @@ name: Static
 
 on:
   workflow_call:
+    inputs:
+      test-setup-command:
+        type: string
+        description: Command to run to setup the test environment
+        required: false
+        default: ''
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
@@ -23,5 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: stampedeapp/actions/setup@main
+      - run: ${{ inputs.test-setup-command }}
+        if: ${{ inputs.test-setup-command != '' }}
       - uses: stampedeapp/actions/jest@main
       - uses: stampedeapp/actions/jest-coverage@main
