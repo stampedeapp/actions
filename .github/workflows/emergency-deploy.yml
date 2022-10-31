@@ -45,7 +45,7 @@ jobs:
               {
                 "text": "An emergency deployment has been triggered on \`${{ github.event.repository.name }}\` by ${{ github.triggering_actor }} with commit SHA \`${{ github.sha }}\`.",
                 "icon_emoji": ":rotating_light:",
-                "username": "Emergency-o-matic
+                "username": "Emergency-o-matic"
               }
           PAYLOAD
 
