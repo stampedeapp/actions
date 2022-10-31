@@ -43,8 +43,9 @@ jobs:
             -H 'Content-type: application/json' \
             -d @- <<PAYLOAD
               {
-                "text": "An emergency deployment has been triggered on ${{ github.event.repository.name }} by ${{ github.triggering_actor }} with commit SHA ${{ github.sha }}.",
-                "icon_emoji": ":rotating_light:"
+                "text": "An emergency deployment has been triggered on `${{ github.event.repository.name }}` by ${{ github.triggering_actor }} with commit SHA `${{ github.sha }}`.",
+                "icon_emoji": ":rotating_light:",
+                "username": "Snitchbot"
               }
           PAYLOAD
 
