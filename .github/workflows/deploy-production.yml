@@ -108,8 +108,9 @@ jobs:
     environment: Production
     needs:
       - build-production
+      - deploy-staging
       - e2e-testing
-    if: ${{ always() && (inputs.run-e2e-tests == 'false' || needs.e2e-testing.result == 'success') && (needs.build-production.result == 'success') }}
+    if: ${{ always() && (inputs.run-e2e-tests == 'false' || needs.e2e-testing.result == 'success') && (needs.build-production.result == 'success' && (needs.deploy-staging.result == 'success') }}
     concurrency:
       group: cloudformation-production
     steps:
