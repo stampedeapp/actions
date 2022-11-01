@@ -34,6 +34,21 @@ env:
   CLOUDFORMATION_ROLE_ARN: ${{ secrets.CLOUDFORMATION_ROLE_ARN }}
 
 jobs:
+  name-and-shame:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack notifier
+        run: |
+          curl -X POST ${{ secrets.FREEZEBOT_WEBHOOK }} \
+            -H 'Content-type: application/json' \
+            -d @- <<PAYLOAD
+              {
+                "text": "An emergency deployment has been triggered on \`${{ github.event.repository.name }}\` by ${{ github.triggering_actor }} with commit SHA \`${{ github.sha }}\`.",
+                "icon_emoji": ":rotating_light:",
+                "username": "Emergency-o-matic"
+              }
+          PAYLOAD
+
   build:
     runs-on: ubuntu-latest
     steps:
