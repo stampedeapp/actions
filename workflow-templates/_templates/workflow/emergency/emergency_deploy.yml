@@ -12,6 +12,11 @@ on:
         required: false
         default: false
         type: boolean
+      sha:
+        description: 'SHA to deploy'
+        required: false
+        default: ''
+        type: string
 
 jobs:
   ci:
@@ -20,3 +25,4 @@ jobs:
     with:
       stack-name: <%= stack %>
       reuse-image: ${{ github.event.inputs.reuse-image == 'true' }}
+      sha: ${{ github.event.inputs.sha }}
