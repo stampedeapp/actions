@@ -54,13 +54,17 @@ runs:
             --output text
         )" >> $GITHUB_OUTPUT
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-region: ${{ inputs.region }}
-        role-to-assume: ${{ env.CLOUDFORMATION_ROLE_ARN }}
-        role-duration-seconds: 1200
-        role-skip-session-tagging: true
+    - name: Assume cloudformation role
+      shell: bash
+      run: |
+        aws sts assume-role \
+          --role-arn ${{ env.CLOUDFORMATION_ROLE_ARN }} \
+          --role-session-name github-actions-cloudformation \
+          --query 'Credentials' \
+          --output json > /tmp/credentials
+        echo "AWS_ACCESS_KEY_ID=$(jq -r .AccessKeyId /tmp/credentials)" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=$(jq -r .SecretAccessKey /tmp/credentials)" >> $GITHUB_ENV
+        echo "AWS_SESSION_TOKEN=$(jq -r .SessionToken /tmp/credentials)" >> $GITHUB_ENV
 
     - name: Deploy to cloudformation
       shell: bash
