@@ -40,7 +40,6 @@ runs:
       run: |
         echo "AWS_DEFAULT_REGION=${{ inputs.region }}" >> $GITHUB_ENV
         echo "AWS_REGION=${{ inputs.region }}" >> $GITHUB_ENV
-        echo "AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> $GITHUB_ENV
 
     - name: Get ECR Image
       shell: bash
