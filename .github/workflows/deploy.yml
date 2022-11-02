@@ -71,7 +71,7 @@ jobs:
       - uses: stampedeapp/actions/check-code-freeze@main
         with:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
-      - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
+      - uses: stampedeapp/actions/deploy-to-cloudformation-cli@wip
         with:
           stack-name: ${{ inputs.stack-name }}
           ldt-environment: ${{ inputs.ldt-environment }}
