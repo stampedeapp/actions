@@ -36,22 +36,34 @@ runs:
         branch: ${{ github.head_ref || github.ref_name }}
       
     - name: Configure AWS credentials
-      # Log in without assuming role first, to get ECR registry name
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-region: ${{ inputs.region }}
+      shell: bash
+      run: |
+        echo "AWS_DEFAULT_REGION=${{ inputs.region }}" >> $GITHUB_ENV
+        echo "AWS_REGION=${{ inputs.region }}" >> $GITHUB_ENV
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+    - name: Get ECR Image
+      shell: bash
+      id: get-ecr-image
+      run: |
+        echo "registry-id=$(
+          aws ecr describe-images \
+            --repository-name ${{ github.event.repository.name }} \
+            --image-ids imageTag='${{ inputs.ldt-environment }}-${{ inputs.github-sha }}' \
+            --query 'imageDetails[0].registryId' \
+            --output text
+        )" >> $GITHUB_OUTPUT
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-region: ${{ inputs.region }}
-        role-to-assume: ${{ env.CLOUDFORMATION_ROLE_ARN }}
-        role-duration-seconds: 1200
-        role-skip-session-tagging: true
+    - name: Assume cloudformation role
+      shell: bash
+      run: |
+        aws sts assume-role \
+          --role-arn ${{ env.CLOUDFORMATION_ROLE_ARN }} \
+          --role-session-name github-actions-cloudformation \
+          --query 'Credentials' \
+          --output json > /tmp/credentials
+        echo "AWS_ACCESS_KEY_ID=$(jq -r .AccessKeyId /tmp/credentials)" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=$(jq -r .SecretAccessKey /tmp/credentials)" >> $GITHUB_ENV
+        echo "AWS_SESSION_TOKEN=$(jq -r .SessionToken /tmp/credentials)" >> $GITHUB_ENV
 
     - name: Deploy to cloudformation
       shell: bash
@@ -63,7 +75,7 @@ runs:
           --capabilities CAPABILITY_NAMED_IAM \
           --parameter-overrides \
             $(cat configs/${{ inputs.ldt-environment }}.json | jq -r '.Parameters | to_entries[] | "\(.key)=\(.value)"') \
-            ECRImage=${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.ldt-environment }}-${{ inputs.github-sha }} \
+            ECRImage=${{ steps.get-ecr-image.outputs.registry-id }}.dkr.ecr.${{ inputs.region }}.amazonaws.com/${{ github.event.repository.name }}:${{ inputs.ldt-environment }}-${{ inputs.github-sha }} \
             CommitHash=${{ inputs.github-sha }} \
             ${{ inputs.extra-flags }}
 
