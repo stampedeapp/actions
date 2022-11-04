@@ -6,11 +6,17 @@ inputs:
     description: Whether to use production dependencies
     default: "false"
     required: false
+  ref:
+    description: The branch, tag or SHA to checkout.
+    default: ''
+    required: false
 
 runs:
   using: composite
   steps:
     - uses: actions/checkout@v3.1.0
+      with:
+        ref: ${{ inputs.ref }}
     - uses: martijnhols/actions-cache/restore@v3
       id: cache
       with:

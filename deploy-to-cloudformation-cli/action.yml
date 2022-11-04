@@ -33,7 +33,7 @@ runs:
       uses: Bhacaz/checkout-files@v2
       with:
         files: cloudformation/cloudformation.yaml configs/${{ inputs.ldt-environment }}.json
-        branch: ${{ github.head_ref || github.ref_name }}
+        branch: ${{ inputs.github-sha }}
       
     - name: Configure AWS credentials
       shell: bash
