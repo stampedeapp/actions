@@ -53,6 +53,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: stampedeapp/actions/setup@main
+        with:
+          ref: ${{ inputs.sha }}
       - uses: stampedeapp/actions/deploy-to-ecr@main
         with:
           ldt-environment: ${{ inputs.ldt-environment }}
