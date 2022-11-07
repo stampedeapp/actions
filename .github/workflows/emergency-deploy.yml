@@ -16,11 +16,6 @@ on:
         type: string
         description: Name of the stack to deploy to
         required: true
-      reuse-image:
-        type: string
-        description: 'Reuse existing image if it exists?'
-        required: false
-        default: 'false'
       sha:
         type: string
         description: SHA of the commit to use for deployment
@@ -61,7 +56,6 @@ jobs:
           npm-token: ${{ secrets.NPM_READONLY_TOKEN }}
           docker-hub-username: ${{ secrets.DOCKER_USERNAME }}
           docker-hub-password: ${{ secrets.DOCKER_PASSWORD }}
-          reuse-image: ${{ inputs.reuse-image }}
           github-sha: ${{ inputs.sha }}
   
   execute-changeset:
