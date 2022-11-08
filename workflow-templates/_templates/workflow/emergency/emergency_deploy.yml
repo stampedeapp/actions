@@ -7,6 +7,11 @@ name: Emergency Deployment (<%= name %>)
 on:
   workflow_dispatch:
     inputs:
+      reuse-image:
+        description: 'Try to reuse previously built image?'
+        required: false
+        default: false
+        type: boolean
       sha:
         description: 'SHA to deploy'
         required: false
@@ -19,4 +24,5 @@ jobs:
     secrets: inherit
     with:
       stack-name: <%= stack %>
+      reuse-image: ${{ github.event.inputs.reuse-image == 'true' }}
       sha: ${{ github.event.inputs.sha }}
