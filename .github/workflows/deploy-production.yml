@@ -95,6 +95,7 @@ jobs:
     steps:
       - uses: stampedeapp/actions/setup@main
       - uses: stampedeapp/actions/run-cypress@main
+        timeout-minutes: 30
         with: 
           e2e-testing-key: ${{ secrets.E2E_TESTING_KEY }}
         env:
