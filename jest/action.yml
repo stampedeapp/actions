@@ -20,11 +20,6 @@ runs:
       run: yarn jest --maxWorkers=2 --shard=${{ inputs.shard-number }}/${{ inputs.shard-total }} --ci --coverage --testLocationInResults --forceExit
       env:
         NODE_ENV: test
-        DD_CIVISIBILITY_AGENTLESS_ENABLED: "true"
-        DD_API_KEY: ${{ inputs.datadog-api-key == '' && env.DATADOG_API_KEY || inputs.datadog-api-key }}
-        NODE_OPTIONS: "-r dd-trace/ci/init"
-        DD_ENV: ci
-        DD_SERVICE: ${{ github.event.repository.name }}
     - run: rm -rf coverage/lcov-report
       shell: bash
     - run: mv coverage/lcov.info coverage/coverage-${{ inputs.shard-number }}.lcov

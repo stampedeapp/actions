@@ -11,7 +11,6 @@ on:
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
-  DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY }}
   CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_KEY }}
 
 jobs:
