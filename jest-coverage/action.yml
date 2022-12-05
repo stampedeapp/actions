@@ -14,7 +14,7 @@ runs:
       with:
         name: coverage-artifacts
         path: coverage
-    - uses: paambaati/codeclimate-action@v3.0.0
+    - uses: stampedeapp/codeclimate-action@main
       with:
         coverageLocations: |
           ${{github.workspace}}/coverage/*.lcov:lcov
