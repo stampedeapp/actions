@@ -61,12 +61,12 @@ runs:
           --role-session-name github-actions-cloudformation \
           --query 'Credentials' \
           --output json > /tmp/credentials
-        echo "::add-mask::AWS_ACCESS_KEY_ID"
-        echo "::add-mask::AWS_SECRET_ACCESS_KEY"
-        echo "::add-mask::AWS_SESSION_TOKEN"
         echo "AWS_ACCESS_KEY_ID=$(jq -r .AccessKeyId /tmp/credentials)" >> $GITHUB_ENV
         echo "AWS_SECRET_ACCESS_KEY=$(jq -r .SecretAccessKey /tmp/credentials)" >> $GITHUB_ENV
         echo "AWS_SESSION_TOKEN=$(jq -r .SessionToken /tmp/credentials)" >> $GITHUB_ENV
+        echo "::add-mask::$AWS_SESSION_TOKEN" &>/dev/null
+        echo "::add-mask::$AWS_SECRET_ACCESS_KEY" &>/dev/null
+        echo "::add-mask::$AWS_ACCESS_KEY_ID" &>/dev/null
 
     - name: Deploy to cloudformation
       shell: bash
