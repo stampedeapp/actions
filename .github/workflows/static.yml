@@ -7,7 +7,7 @@ on:
         type: string
         description: Command to run to setup the test environment
         required: false
-        default: ''
+        default: ""
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
@@ -25,7 +25,7 @@ jobs:
       - uses: stampedeapp/actions/setup@main
       - run: yarn lint
   jest:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-16-core
     steps:
       - uses: stampedeapp/actions/setup@main
       - run: ${{ inputs.test-setup-command }}
