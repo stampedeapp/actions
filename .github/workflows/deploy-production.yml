@@ -125,14 +125,14 @@ jobs:
 
   alert-on-failure:
     runs-on: ubuntu-latest
-    if: ${{ failure() && !cancelled() }}
+    if: failure() && !cancelled()
     steps:
       - uses: stampedeapp/actions/slack-webhook@main
         with:
           github-token: ${{ secrets.FREEZEBOT_WEBHOOK }}
           payload: |
             {
-                "text": "Deployment has failed on repository ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                "text": "Deployment failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                 "username": "Deployment failure",
                 "icon_emoji": ":rotating_light:",
             }
