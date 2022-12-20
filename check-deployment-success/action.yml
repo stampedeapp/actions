@@ -2,7 +2,7 @@ name: Check production deployed successfully
 description: Ensured that the production deployment was successful.
 
 inputs:
-  github_token:
+  github-token:
     description: The CLI config credentials token to use for deployment.
     required: true
 
