@@ -14,17 +14,11 @@ runs:
       shell: bash
       run: |
         export RESPONSE=$(
-          curl \
-            -H "Authorization: Bearer ${{ inputs.github-token }}" \
-            -H "Accept: application/vnd.github+json" \
-              https://api.github.com/repos/${{ github.repository }}/deployments?environment=Production\&per_page=1
+          curl -H "Authorization: Bearer ${{ inputs.github-token }}" -H "Accept: application/vnd.github+json" https://api.github.com/repos/${{ github.repository }}/deployments?environment=Production\&per_page=1
         )
         export STATUSES_URL=$(printf '%s' "$RESPONSE" | jq -r '.[0].statuses_url')
         export RESPONSE=$(
-          curl \
-            -H "Authorization: Bearer ${{ inputs.github-token }}" \
-            -H "Accept: application/vnd.github+json" \
-              $STATUSES_URL?per_page=1
+          curl -H "Authorization: Bearer ${{ inputs.github-token }}" -H "Accept: application/vnd.github+json" $STATUSES_URL?per_page=1
         );
         echo "response=$( printf '%s' "$RESPONSE" | jq -r '.[0].state' )" >> $GITHUB_OUTPUT
     - name: Fail if response was error
