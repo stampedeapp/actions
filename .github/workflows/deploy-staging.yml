@@ -1,0 +1,105 @@
+name: Deploy (production)
+
+on:
+  workflow_call:
+    inputs:
+      stack-name:
+        type: string
+        description: Name of the stack to deploy to
+        required: true
+      run-e2e-tests:
+        type: string
+        description: Run e2e tests before deploying
+        required: false
+        default: 'false'
+      test-setup-command:
+        type: string
+        description: Command to run to setup the test environment
+        required: false
+        default: ''
+
+
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  CLOUDFORMATION_ROLE_ARN: ${{ secrets.CLOUDFORMATION_ROLE_ARN }}
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: stampedeapp/actions/install-dependencies@main
+
+  static:
+    uses: stampedeapp/actions/.github/workflows/static.yml@main
+    needs: install
+    secrets: inherit
+    with:
+      test-setup-command: ${{ inputs.test-setup-command }}
+
+  build-staging:
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - uses: stampedeapp/actions/setup@main
+      - uses: stampedeapp/actions/deploy-to-ecr@main
+        with:
+          ldt-environment: staging
+          npm-token: ${{ secrets.NPM_READONLY_TOKEN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          docker-hub-username: ${{ secrets.DOCKER_USERNAME }}
+          docker-hub-password: ${{ secrets.DOCKER_PASSWORD }}
+
+  build-production:
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - uses: stampedeapp/actions/setup@main
+      - uses: stampedeapp/actions/deploy-to-ecr@main
+        with:
+          ldt-environment: prod
+          npm-token: ${{ secrets.NPM_READONLY_TOKEN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          docker-hub-username: ${{ secrets.DOCKER_USERNAME }}
+          docker-hub-password: ${{ secrets.DOCKER_PASSWORD }}
+  
+  deploy-staging:
+    runs-on: ubuntu-latest
+    environment: Staging
+    needs:
+      - static
+      - build-staging
+    concurrency:
+      group: cloudformation-staging
+    steps:
+      - uses: stampedeapp/actions/check-code-freeze@main
+        with:
+          github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
+      - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
+        with:
+          stack-name: ${{ inputs.stack-name }}
+          ldt-environment: staging
+
+  e2e-testing:
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node16.17.0-chrome106
+    needs: deploy-staging
+    if: ${{ inputs.run-e2e-tests == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+    steps:
+      - uses: stampedeapp/actions/setup@main
+      - uses: stampedeapp/actions/run-cypress@main
+        timeout-minutes: 30
+        with: 
+          e2e-testing-key: ${{ secrets.E2E_TESTING_KEY }}
+        env:
+          ENV: staging
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_DEPLOYSENTINEL_KEY: ${{ secrets.CYPRESS_DEPLOYSENTINEL_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
