@@ -1,0 +1,23 @@
+name: Sourcegraph
+description: Call a slack webhook with a given payload
+
+inputs:
+  url:
+    description: URL to send the payload to
+    required: true
+  payload:
+    description: Whether to use production dependencies
+    default: "false"
+    required: false
+
+runs:
+  using: composite
+  steps:
+  - name: Send
+    shell: bash
+    run: |
+      curl -X POST ${{ inputs.token }} \
+        -H 'Content-type: application/json' \
+        -d @- <<PAYLOAD
+          ${{ inputs.payload }}
+      PAYLOAD
