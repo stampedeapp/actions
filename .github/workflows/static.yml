@@ -35,3 +35,19 @@ jobs:
         if: ${{ inputs.test-setup-command != '' }}
       - uses: stampedeapp/actions/jest@main
       - uses: stampedeapp/actions/jest-coverage@main
+  cloudformation:
+    name: Cloudformation Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.1.0
+      - name: "Check for cloudformation file"
+        id: check_files
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "cloudformation/cloudformation.yaml"
+      - name: CFN Lint
+        if: steps.check_files.outputs.files_exists == 'true'
+        uses: scottbrenner/cfn-lint-action@v2
+        with:
+          command: cfn-lint -r eu-west-1 -t ./cloudformation/cloudformation.yaml
