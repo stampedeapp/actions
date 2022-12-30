@@ -1,0 +1,39 @@
+name: S3 Deploy Next.JS assets
+description: Deploy next.js assets to S3
+
+inputs:
+  aws-access-key-id:
+    description: The AWS access key ID to use for deployment.
+    required: true
+  aws-secret-access-key:
+    description: The AWS secret access key to use for deployment.
+    required: true
+  cloudformation-role-arn:
+    description: The ARN of the Cloudformation role to use for deployment.
+    required: true
+  s3-path:
+    description: The S3 path to use for static assets.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Configure AWS credentials
+      # Log in without assuming role first, to get ECR registry name
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: eu-west-1
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: eu-west-1
+        role-to-assume: ${{ inputs.cloudformation-role-arn }}
+        role-duration-seconds: 900
+        role-skip-session-tagging: true
+        
+    - name: Push resources to S3
+      shell: bash
+      run: aws s3 sync .next/static ${{ inputs.s3-path }}/_next/static --acl public-read --exclude "*.map"
