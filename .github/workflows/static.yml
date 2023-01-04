@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: stampedeapp/actions/setup@main
-      - run: yarn global install type-coverage typescript
+      - run: yarn global add type-coverage typescript
       - name: Get type coverage
         run: |
           export coverage=$(type-coverage | head -n 1 | grep -oE "[^ ]+$")
