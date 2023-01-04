@@ -50,7 +50,7 @@ jobs:
           api-key: ${{ secrets.DATADOG_API_KEY }}
           metrics: |
             - type: gauge
-              name: type-coverage
+              name: github.type_coverage
               value: ${{ env.coverage }}
               tags:
                 - "repo:${{ github.repository }}"
