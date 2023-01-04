@@ -34,3 +34,27 @@ jobs:
         if: ${{ inputs.test-setup-command != '' }}
       - uses: stampedeapp/actions/jest@main
       - uses: stampedeapp/actions/jest-coverage@main
+  type-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: stampedeapp/actions/setup@main
+      - run: yarn global install type-coverage typescript
+      - name: Get type coverage
+        run: |
+          export coverage=$(type-coverage | head -n 1 | grep -oE "[^ ]+$")
+          echo "coverage=$coverage" >> $GITHUB_ENV
+          echo "Coverage: $coverage" >> $GITHUB_OUTPUT
+      - name: Upload to datadog
+        uses: masci/datadog@v1
+        with: 
+          api-key: ${{ secrets.DATADOG_API_KEY }}
+          metrics: |
+            - type: gauge
+              name: type-coverage
+              value: ${{ env.coverage }}
+              tags:
+                - "repo:${{ github.repository }}"
+                - "service:${{ github.event.repository.name }}"
+                - "branch:${{ github.ref }}"
+                - "commit:${{ github.sha }}"
+
