@@ -42,7 +42,7 @@ jobs:
       - name: Get type coverage
         run: |
           export coverage=$(type-coverage | head -n 1 | grep -oE "[^ ]+$")
-          echo "coverage=$coverage" >> $GITHUB_ENV
+          echo "coverage=${coverage%?}" >> $GITHUB_ENV
           echo "Coverage: $coverage" >> $GITHUB_OUTPUT
       - name: Upload to datadog
         uses: masci/datadog@v1
