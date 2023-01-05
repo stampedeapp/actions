@@ -49,13 +49,13 @@ runs:
           browser: chrome
           headed: true
           ci-build-id: '${{ github.repository }}-${{ github.workflow }}-${{ github.sha }}-${{ github.run_attempt }}'
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3.1.1
         if: failure()
         with:
           name: cypress-screenshots
           path: e2e-testing/cypress/screenshots
       # Test run video was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3.1.1
         if: always()
         with:
           name: cypress-videos
