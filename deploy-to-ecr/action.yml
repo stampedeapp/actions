@@ -75,6 +75,17 @@ runs:
         restore-keys: |
           ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}
   
+    - name: "Check for next.config.js"
+      id: nextjs
+      uses: andstor/file-existence-action@v2
+      with:
+        files: "next.config.js"
+
+    - if: ${{ steps.nextjs.outputs.files_exists === 'true' }}
+      uses: stampedeapp/actions/nextjs-build@main
+      env:
+        LDT_SENTRY_DRYRUN: "false"
+
     - name: Build, tag, and push docker image to Amazon ECR Public
       id: build-push
       if: ${{ always() && steps.cache-docker.outcome == 'success' }}
@@ -89,6 +100,12 @@ runs:
         build-args: |
           NPM_TOKEN=${{ inputs.npm-token }}
           COMMIT_HASH=${{ inputs.github-sha }}
+
+    - if: ${{ steps.nextjs.outputs.files_exists === 'true' }}
+      uses: stampedeapp/actions/nextjs-s3-deploy@main
+      env:
+        s3-path: ${{ inputs.s3-path }}
+
     - name: Move cache
       if: ${{ always() && steps.build-push.outcome == 'success' }}
       shell: bash

@@ -1,0 +1,34 @@
+name: Deploy S3 Assets
+description: Deploy next.js assets to S3
+
+inputs:
+  s3-path:
+    description: The S3 path to use for static assets.
+    required: true
+
+outputs:
+  stack-id:
+    description: The ID of the created stack
+    value: ${{ steps.deploy-to-cloudformation.outputs.stack-id }}
+
+runs:
+  using: composite
+  steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: eu-west-1
+        role-to-assume: ${{ env.CLOUDFORMATION_ROLE_ARN }}
+        role-duration-seconds: 900
+        role-skip-session-tagging: true
+        
+    - name: Push resources to S3
+      shell: bash
+      run: aws s3 sync .next/static ${{ inputs.s3-path }}/_next/static --acl public-read --exclude "*.map"
