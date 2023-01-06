@@ -1,12 +1,6 @@
 name: Sourcegraph
 description: Send sourcegraph info
 
-inputs:
-  production:
-    description: Whether to use production dependencies
-    default: "false"
-    required: false
-
 runs:
   using: composite
   steps:
