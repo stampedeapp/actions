@@ -32,7 +32,8 @@ runs:
         node-version-file: ".nvmrc"
         registry-url: "https://registry.npmjs.org"
     - name: Install Dependencies
-      run: yarn --frozen-lockfile --quiet --production=${{ inputs.production }} --prefer-offline
+      if: steps.check-cache.outputs.cache-hit != 'true'
+      run: yarn --frozen-lockfile --quiet --production=${{ inputs.production }}
       shell: bash
       env:
         NODE_AUTH_TOKEN: ${{ inputs.npm-token == '' && env.NODE_AUTH_TOKEN || inputs.npm-token }}
