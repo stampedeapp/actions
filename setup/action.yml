@@ -20,7 +20,7 @@ runs:
     - uses: martijnhols/actions-cache/restore@v3
       id: cache
       with:
-        path: node_modules
+        path: "**/node_modules/**/*"
         key: ${{ runner.os }}-yarn-${{ inputs.production }}-${{ hashFiles('**/yarn.lock') }}
     - name: Ensure cache hit
       shell: bash
