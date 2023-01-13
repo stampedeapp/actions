@@ -31,6 +31,10 @@ inputs:
     description: Whether to reuse an existing image if it exists.
     required: false
     default: 'false'
+  context:
+    description: The context to use for deployment.
+    required: false
+    default: '.'
     
 runs:
   using: composite
@@ -80,7 +84,7 @@ runs:
       if: ${{ always() && steps.cache-docker.outcome == 'success' }}
       uses: docker/build-push-action@v3
       with:
-        context: .
+        context: ${{ inputs.context }}
         builder: ${{ steps.buildx.outputs.name }}
         push: true
         tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
