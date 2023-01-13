@@ -28,6 +28,7 @@ jobs:
       - run: yarn lint
   jest:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: stampedeapp/actions/setup@main
       - run: ${{ inputs.test-setup-command }}
