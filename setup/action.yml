@@ -17,10 +17,14 @@ runs:
     - uses: actions/checkout@v3.1.0
       with:
         ref: ${{ inputs.ref }}
+    - name: Get yarn cache directory path
+      shell: bash
+      id: yarn-cache-dir-path
+      run: echo "name=dir::$(yarn cache dir)" >> $GITHUB_OUTPUT
     - uses: martijnhols/actions-cache/restore@v3
       id: cache
       with:
-        path: "**/node_modules/**/*"
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ inputs.production }}-${{ hashFiles('**/yarn.lock') }}
     - name: Ensure cache hit
       shell: bash
@@ -37,5 +41,5 @@ runs:
         registry-url: "https://registry.npmjs.org"
     - name: Install Dependencies
       if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-      run: yarn --frozen-lockfile --quiet --production=${{ inputs.production }}
+      run: yarn --frozen-lockfile --quiet --production=${{ inputs.production }} --prefer-offline
       shell: bash
