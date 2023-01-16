@@ -35,7 +35,7 @@ jobs:
         if: ${{ inputs.test-setup-command != '' }}
       - uses: stampedeapp/actions/jest@main
         with:
-          workers: 8
+          workers: 6
       - uses: stampedeapp/actions/jest-coverage@main
   type-coverage:
     runs-on: ubuntu-latest
