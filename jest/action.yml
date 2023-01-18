@@ -21,25 +21,15 @@ runs:
     - name: Run Jest
       shell: bash
       run: yarn jest --maxWorkers=${{ inputs.workers }} --shard=${{ inputs.shard-number }}/${{ inputs.shard-total }} --ci --coverage --testLocationInResults --forceExit
-    - uses: stampedeapp/codeclimate-action@main
-      if: always()
-      with:
-        debug: true 
-        coverageCommand: echo 'Uploading to Code Coverage'
       env:
-        CC_TEST_REPORTER_ID: ${{ inputs.code-climate-key == '' && env.CC_TEST_REPORTER_ID || inputs.code-climate-key }}
-    - name: Run codacy-coverage-reporter
-      if: always()
-      uses: codacy/codacy-coverage-reporter-action@v1
+        NODE_ENV: test
+    - run: rm -rf coverage/lcov-report
+      shell: bash
+    - run: mv coverage/lcov.info coverage/coverage-${{ inputs.shard-number }}.lcov
+      shell: bash
+    - run: mv coverage/coverage-final.json coverage/coverage-final-${{ inputs.shard-number }}.json
+      shell: bash
+    - uses: actions/upload-artifact@v3
       with:
-        api-token: ${{ secrets.CODACY_API_TOKEN }}
-        # or
-        # api-token: ${{ secrets.CODACY_API_TOKEN }}
-        coverage-reports: coverage/lcov.info
-        # or a comma-separated list for multiple reports
-        # coverage-reports: <PATH_TO_REPORT>, <PATH_TO_REPORT>
-    - uses: actions/upload-artifact@v3.1.1
-      if: always()
-      with:
-        name: coverage
-        path: coverage
+        name: coverage-artifacts
+        path: coverage/
