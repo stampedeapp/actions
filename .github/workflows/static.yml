@@ -36,7 +36,6 @@ jobs:
       - uses: stampedeapp/actions/jest@main
         with:
           workers: 2
-      - uses: stampedeapp/actions/jest-coverage@main
   type-coverage:
     runs-on: ubuntu-latest
     steps:
