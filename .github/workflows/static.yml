@@ -12,6 +12,7 @@ on:
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
   CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_KEY }}
+  CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
 
 jobs:
   typecheck:
@@ -36,7 +37,6 @@ jobs:
       - uses: stampedeapp/actions/jest@main
         with:
           workers: 2
-      - uses: stampedeapp/actions/jest-coverage@main
   type-coverage:
     runs-on: ubuntu-latest
     steps:
