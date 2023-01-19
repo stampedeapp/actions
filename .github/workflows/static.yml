@@ -28,7 +28,7 @@ jobs:
       - uses: stampedeapp/actions/setup@main
       - run: yarn lint
   jest:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-4-cores
     timeout-minutes: 20
     steps:
       - uses: stampedeapp/actions/setup@main
