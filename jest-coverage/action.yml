@@ -10,18 +10,9 @@ runs:
   using: composite
 
   steps:
-    - uses: actions/download-artifact@v3
-      with:
-        name: coverage-artifacts
-        path: coverage
     - uses: stampedeapp/codeclimate-action@main
       with:
         coverageLocations: |
           ${{github.workspace}}/coverage/*.lcov:lcov
       env:
         CC_TEST_REPORTER_ID: ${{ inputs.code-climate-key == '' && env.CC_TEST_REPORTER_ID || inputs.code-climate-key }}
-    - uses: actions/upload-artifact@v3.1.1
-      if: always()
-      with:
-        name: coverage
-        path: coverage
