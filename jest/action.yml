@@ -26,7 +26,6 @@ runs:
     - uses: stampedeapp/codeclimate-action@main
       if: always()
       with:
-        debug: true 
         coverageCommand: echo 'Uploading to Code Coverage'
       env:
         CC_TEST_REPORTER_ID: ${{ inputs.code-climate-key == '' && env.CC_TEST_REPORTER_ID || inputs.code-climate-key }}
