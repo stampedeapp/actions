@@ -38,7 +38,7 @@ runs:
         run: echo '${{ github.repository }}-${{ github.workflow }}-${{ github.sha }}-${{ github.run_attempt }}'
 
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v5.0.5
 
         with:
           working-directory: e2e-testing 
