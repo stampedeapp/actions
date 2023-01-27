@@ -22,11 +22,11 @@ const environmentFile = path.join(
 );
 
 if (!fs.existsSync(cloudformationFile)) {
-  return console.log("No Cloudformation file");
+  return core.info("No Cloudformation file");
 }
 
 if (!fs.existsSync(environmentFile)) {
-  return console.log("No Environment file ");
+  return core.info("No Environment file ");
 }
 
 const environmentText = fs.readFileSync(environmentFile, {
@@ -55,15 +55,7 @@ if (disallowedParameters.length) {
     failureMessages.push(`     ${parameter}`);
   });
   const failureMessage = failureMessages.join("\n");
-  console.error(failureMessage);
   core.setFailed(failureMessage);
-}
-
-if (process.argv.indexOf("--fix")) {
-  console.info("Fixing...");
-  disallowedParameters.forEach((parameter) => {
-    environmentConfig.Parameters[parameter] = undefined;
-  });
-  environmentConfig.Parameters = sortKeys(environmentConfig.Parameters);
-  fs.writeFileSync(environmentFile, JSON.stringify(environmentConfig, null, 2));
+} else {
+  core.info(`${environment}.json is all good!`)
 }
