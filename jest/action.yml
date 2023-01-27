@@ -8,9 +8,6 @@ inputs:
   shard-total:
     description: Total number of shards
     default: "1"
-  datadog-api-key:
-    description: Datadog API key. Uses env.DATADOG_API_KEY if not set
-    default: ''
   workers:
     description: number of jest workers to run with
     default: "2"
@@ -23,16 +20,3 @@ runs:
       run: yarn jest --maxWorkers=${{ inputs.workers }} --shard=${{ inputs.shard-number }}/${{ inputs.shard-total }} --ci --coverage --testLocationInResults --forceExit
       env:
         NODE_ENV: test
-    - uses: stampedeapp/codeclimate-action@main
-      if: always()
-      with:
-        debug: true 
-        coverageCommand: echo 'Uploading to Code Coverage'
-      env:
-        CC_TEST_REPORTER_ID: ${{ inputs.code-climate-key == '' && env.CC_TEST_REPORTER_ID || inputs.code-climate-key }}
-    - name: Run codacy-coverage-reporter
-      if: always()
-      uses: codacy/codacy-coverage-reporter-action@v1
-      with:
-        api-token: ${{ env.CODACY_API_TOKEN }}
-        coverage-reports: coverage/lcov.info
