@@ -1,0 +1,9 @@
+name: "Validate Cloudformation"
+description: "Validates the Parameters file for cloudformation deployments"
+inputs:
+  environment-name:
+    description: Environment JSON file to validate
+    required: true
+runs:
+  using: "node16"
+  main: "index.js"
