@@ -34,6 +34,11 @@ runs:
       with:
         files: cloudformation/cloudformation.yaml configs/${{ inputs.ldt-environment }}.json
         branch: ${{ inputs.github-sha }}
+
+    - name: Validate Cloudformation Files
+      uses: stampedeapp/actions/cloudformation-validate@main
+      with:
+        environment: ${{ inputs.ldt-environment }}
       
     - name: Configure AWS credentials
       shell: bash
