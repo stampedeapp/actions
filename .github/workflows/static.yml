@@ -28,6 +28,25 @@ jobs:
       - uses: stampedeapp/actions/setup@main
       - run: yarn lint
 
+  cloudformation:
+    name: Cloudformation Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: "Check file existence"
+        uses: andstor/file-existence-action@v2
+        id: check_files
+        with:
+          files: "cloudformation/cloudformation.yaml"
+
+      - name: CFN Lint
+        uses: scottbrenner/cfn-lint-action@v2
+        if: steps.check_files.outputs.files_exists == 'true'
+        with:
+          command: cfn-lint -r eu-west-1 -t ./cloudformation/cloudformation.yaml
+
   cloudformation-parameters-validation:
     runs-on: ubuntu-latest
     strategy:
