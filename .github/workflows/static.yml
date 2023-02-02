@@ -79,26 +79,5 @@ jobs:
         with:
           api-token: ${{ env.CODACY_API_TOKEN }}
           coverage-reports: coverage/lcov.info
-  type-coverage:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: stampedeapp/actions/setup@main
-      - run: yarn global add type-coverage typescript
-      - name: Get type coverage
-        run: |
-          export coverage=$(type-coverage | head -n 1 | grep -oE "[^ ]+$")
-          echo "coverage=${coverage%?}" >> $GITHUB_ENV
-          echo "Coverage: $coverage" >> $GITHUB_STEP_SUMMARY
-      - name: Upload to datadog
-        uses: masci/datadog@v1
-        with: 
-          api-key: ${{ secrets.DATADOG_API_KEY }}
-          metrics: |
-            - type: gauge
-              name: code.typescript_coverage
-              value: ${{ env.coverage }}
-              tags:
-                - "repo:${{ github.repository }}"
-                - "service:${{ github.event.repository.name }}"
-                - "branch:${{ github.ref }}"
+
 
