@@ -1,5 +1,5 @@
 ---
-to: ../../<%=name%>/.github/workflows/pr.yml
+to: ../../<%=name%>/.github/workflows/static.yml
 ---
 name: PR (<%= name %>)
 

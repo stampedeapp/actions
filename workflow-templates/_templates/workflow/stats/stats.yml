@@ -1,6 +1,8 @@
 ---
 to: ../../<%=name%>/.github/workflows/stats.yml
 ---
+name: Stats (<%= name %>)
+
 on:
   schedule:
     - cron: '0 * * * *'
