@@ -1,0 +1,11 @@
+---
+to: ../../<%=name%>/.github/workflows/pr.yml
+---
+on:
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  ci:
+    uses: stampedeapp/actions/.github/workflows/stats.yml@main
+    secrets: inherit
