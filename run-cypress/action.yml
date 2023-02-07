@@ -33,14 +33,11 @@ runs:
         working-directory: e2e-testing
         run: rm -rf .git
 
-      - name: Log CI Run ID
-        shell: bash
-        run: echo '${{ github.repository }}-${{ github.workflow }}-${{ github.sha }}-${{ github.run_attempt }}'
-
       - name: Cypress run
-        uses: cypress-io/github-action@v5.0.5
+        uses: cypress-io/github-action@v5
 
         with:
+          install-command: yarn --frozen-lockfile
           working-directory: e2e-testing 
           start: ${{ inputs.start }}
           wait-on: ${{ inputs.wait-on }}
