@@ -56,7 +56,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: install
     steps:
-      - uses: stampedeapp/actions/setup@main
       - uses: stampedeapp/actions/deploy-to-ecr@main
         with:
           ldt-environment: prod
@@ -78,6 +77,8 @@ jobs:
       - uses: stampedeapp/actions/check-code-freeze@main
         with:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
+      - uses: stampedeapp/actions/setup@main
+      - run: yarn predeploy || true
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
           stack-name: ${{ inputs.stack-name }}
@@ -118,6 +119,8 @@ jobs:
       - uses: stampedeapp/actions/check-code-freeze@main
         with:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
+      - uses: stampedeapp/actions/setup@main
+      - run: yarn predeploy || true
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
           stack-name: ${{ inputs.stack-name }}
