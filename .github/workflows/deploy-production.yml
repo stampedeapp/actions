@@ -80,6 +80,8 @@ jobs:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
       - uses: stampedeapp/actions/setup@main
       - run: yarn predeploy || true
+        env:
+          MONGO_HOST_CONNECTION: ${{ secrets.MONGO_HOST_CONNECTION_STAGING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
           stack-name: ${{ inputs.stack-name }}
@@ -122,6 +124,8 @@ jobs:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
       - uses: stampedeapp/actions/setup@main
       - run: yarn predeploy || true
+        env:
+          MONGO_HOST_CONNECTION: ${{ secrets.MONGO_HOST_CONNECTION_PRODUCTION }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
           stack-name: ${{ inputs.stack-name }}
