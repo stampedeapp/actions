@@ -59,7 +59,7 @@ jobs:
           github-sha: ${{ inputs.sha }}
   
   execute-changeset:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-4-cores
     environment: ${{ inputs.environment }}
     needs:
       - static

@@ -67,7 +67,7 @@ jobs:
           docker-hub-password: ${{ secrets.DOCKER_PASSWORD }}
   
   deploy-staging:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-4-cores
     environment: Staging
     needs:
       - static
@@ -109,7 +109,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-production:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-4-cores
     environment: Production
     needs:
       - build-production
