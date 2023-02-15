@@ -67,7 +67,7 @@ jobs:
       - uses: stampedeapp/actions/setup@main
       - run: yarn predeploy || true
         env:
-          MONGO_HOST_CONNECTION: ${{ secrets.MONGO_HOST_CONNECTION }}
+          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
           stack-name: ${{ inputs.stack-name }}
