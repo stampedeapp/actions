@@ -30,7 +30,7 @@ on:
         type: string
         description: Mongo host connection string
         required: false
-        default: ''
+        default: ${{ secrets.MONGO_HOST_CONNECTION_DEV }}
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
