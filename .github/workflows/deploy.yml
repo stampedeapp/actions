@@ -26,7 +26,6 @@ on:
         description: Command to run to setup the test environment
         required: false
         default: ''
-
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -60,7 +59,7 @@ jobs:
           github-sha: ${{ inputs.sha }}
   
   execute-changeset:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-4-cores
     environment: ${{ inputs.environment }}
     needs:
       - static
@@ -71,6 +70,10 @@ jobs:
       - uses: stampedeapp/actions/check-code-freeze@main
         with:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
+      - uses: stampedeapp/actions/setup@main
+      - run: yarn predeploy || true
+        env:
+          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
           stack-name: ${{ inputs.stack-name }}
