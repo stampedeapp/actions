@@ -67,7 +67,7 @@ jobs:
         if: ${{ inputs.test-setup-command != '' }}
       - uses: stampedeapp/actions/jest@main
         with:
-          workers: 2
+          workers: 1
       - uses: stampedeapp/codeclimate-action@main
         if: always()
         with:
