@@ -10,9 +10,9 @@ on:
         default: ""
 
 env:
+  DEEPSOURCE_DSN: "${{ secrets.DEEPSOURCE_DSN }}"
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
   CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_KEY }}
-  CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
 
 jobs:
   typecheck:
@@ -65,13 +65,12 @@ jobs:
       - uses: stampedeapp/actions/setup@main
       - run: ${{ inputs.test-setup-command }}
         if: ${{ inputs.test-setup-command != '' }}
+      - run: curl https://deepsource.io/cli | sh
       - uses: stampedeapp/actions/jest@main
         with:
           workers: 2
-      - uses: stampedeapp/codeclimate-action@main
-        if: always()
-        with:
-          debug: true 
-          coverageCommand: echo 'Uploading to Code Coverage'
+      - if: ${{ always() && env.DEEPSOURCE_DSN != '' }}
+        run: ./bin/deepsource report --analyzer test-coverage --key javascript --value-file ./coverage/cobertura-coverage.xml
+        
 
 
