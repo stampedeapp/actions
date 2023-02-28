@@ -17,6 +17,6 @@ runs:
   steps:
     - name: Run Jest
       shell: bash
-      run: yarn jest --maxWorkers=${{ inputs.workers }} --shard=${{ inputs.shard-number }}/${{ inputs.shard-total }} --ci --coverage --testLocationInResults --forceExit
+      run: yarn jest --maxWorkers=${{ inputs.workers }} --shard=${{ inputs.shard-number }}/${{ inputs.shard-total }} --ci --coverage --coverageReporters=cobertura --testLocationInResults --forceExit
       env:
         NODE_ENV: test
