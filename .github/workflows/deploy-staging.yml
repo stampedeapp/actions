@@ -65,7 +65,7 @@ jobs:
         with:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
       - uses: stampedeapp/actions/setup@main
-      - run: yarn predeploy || true
+      - run: LDT_ENV=staging yarn predeploy || true
         env:
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
