@@ -86,6 +86,7 @@ runs:
         tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+        outputs: type=image,oci-mediatypes=true,compression=zstd,compression-level=3,force-compression=true
         build-args: |
           NPM_TOKEN=${{ inputs.npm-token }}
           COMMIT_HASH=${{ inputs.github-sha }}
