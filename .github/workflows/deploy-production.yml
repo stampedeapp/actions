@@ -79,7 +79,7 @@ jobs:
         with:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
       - uses: stampedeapp/actions/setup@main
-      - run: LDT_ENV=staging yarn predeploy || true
+      - run: LDT_ENV=staging if [ "$(cat package.json | jq -r .scripts.predeploy)" != "null" ]; then yarn predeploy; fi;
         env:
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
@@ -123,7 +123,7 @@ jobs:
         with:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
       - uses: stampedeapp/actions/setup@main
-      - run: LDT_ENV=production yarn predeploy || true
+      - run: LDT_ENV=production if [ "$(cat package.json | jq -r .scripts.predeploy)" != "null" ]; then yarn predeploy; fi;
         env:
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
