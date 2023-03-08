@@ -45,6 +45,10 @@ runs:
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: eu-west-1
 
+    - name: noop
+      shell: bash
+      run: echo "noop"
+
     - name: Assume cloudformation role
       shell: bash
       run: |
