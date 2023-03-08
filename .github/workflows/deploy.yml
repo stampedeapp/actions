@@ -38,6 +38,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: install
+    environment: Development
     steps:
       - uses: stampedeapp/actions/setup@wip
       - uses: stampedeapp/actions/deploy-to-ecr@wip
