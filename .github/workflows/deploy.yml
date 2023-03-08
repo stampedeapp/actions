@@ -58,7 +58,7 @@ jobs:
     concurrency:
       group: cloudformation-dev
     steps:
-      - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
+      - uses: stampedeapp/actions/deploy-to-cloudformation-cli@wip
         with:
           stack-name: ${{ inputs.stack-name }}
           ldt-environment: dev
