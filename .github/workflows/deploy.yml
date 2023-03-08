@@ -58,7 +58,7 @@ jobs:
     concurrency:
       group: cloudformation-dev
     steps:
-      - uses: stampedeapp/actions/predeploy@main
+      - uses: stampedeapp/actions/predeploy@wip
         with: 
           ldt-environment: dev
         env:
