@@ -20,6 +20,12 @@ inputs:
     required: false
     description: The AWS region to use for deployment.
     default: eu-west-1
+  github-token:
+    description: |
+      Token with which to check the code freeze status.
+      If not provided, will skip the code freeze check
+    required: false
+    default: ''
 
 outputs:
   stack-id:
@@ -29,11 +35,10 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Checkout files
-      uses: Bhacaz/checkout-files@v2
+    - uses: stampedeapp/actions/predeploy@main
       with:
-        files: cloudformation/cloudformation.yaml configs/${{ inputs.ldt-environment }}.json
-        branch: ${{ inputs.github-sha }}
+        ldt-environment: dev
+        github-token: ${{ inputs.github-token }}
 
     - name: Validate Cloudformation Files
       uses: stampedeapp/actions/cloudformation-validate@main

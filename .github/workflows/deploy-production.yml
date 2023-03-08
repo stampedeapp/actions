@@ -75,15 +75,9 @@ jobs:
     concurrency:
       group: cloudformation-staging
     steps:
-      - uses: stampedeapp/actions/check-code-freeze@main
-        with:
-          github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
-      - uses: stampedeapp/actions/setup@main
-      - run: LDT_ENV=staging if [ "$(cat package.json | jq -r .scripts.predeploy)" != "null" ]; then yarn predeploy; fi;
-        env:
-          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
+          github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
           stack-name: ${{ inputs.stack-name }}
           ldt-environment: staging
 
@@ -119,14 +113,8 @@ jobs:
     concurrency:
       group: cloudformation-production
     steps:
-      - uses: stampedeapp/actions/check-code-freeze@main
-        with:
-          github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
-      - uses: stampedeapp/actions/setup@main
-      - run: LDT_ENV=production if [ "$(cat package.json | jq -r .scripts.predeploy)" != "null" ]; then yarn predeploy; fi;
-        env:
-          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
+          github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
           stack-name: ${{ inputs.stack-name }}
           ldt-environment: prod

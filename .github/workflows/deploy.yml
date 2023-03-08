@@ -58,10 +58,6 @@ jobs:
     concurrency:
       group: cloudformation-dev
     steps:
-      - uses: stampedeapp/actions/setup@main
-      - run: LDT_ENV=dev if [ "$(cat package.json | jq -r .scripts.predeploy)" != "null" ]; then yarn predeploy; fi;
-        env:
-          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
           stack-name: ${{ inputs.stack-name }}
