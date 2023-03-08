@@ -13,7 +13,7 @@ runs:
   using: composite
   steps:
     - uses: stampedeapp/actions/check-code-freeze@main
-      if: ${{ inputs.github-token !== '' }}
+      if: ${{ inputs.github-token != '' }}
       with:
         github-token: ${{ inputs.github-token }}
     - uses: stampedeapp/actions/setup@main
