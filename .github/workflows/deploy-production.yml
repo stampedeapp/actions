@@ -75,6 +75,12 @@ jobs:
     concurrency:
       group: cloudformation-staging
     steps:
+      - uses: stampedeapp/actions/predeploy@main
+        with: 
+          ldt-environment: staging
+          github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
+        env:
+          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
@@ -113,6 +119,12 @@ jobs:
     concurrency:
       group: cloudformation-production
     steps:
+      - uses: stampedeapp/actions/predeploy@main
+        with: 
+          ldt-environment: production
+          github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
+        env:
+          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}

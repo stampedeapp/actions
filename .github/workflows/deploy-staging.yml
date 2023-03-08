@@ -61,11 +61,18 @@ jobs:
     concurrency:
       group: cloudformation-staging
     steps:
+      - uses: stampedeapp/actions/predeploy@main
+        with: 
+          ldt-environment: staging
+          github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
+        env:
+          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
-          github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
           stack-name: ${{ inputs.stack-name }}
           ldt-environment: staging
+        env:
+          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
 
   e2e-testing:
     runs-on: ubuntu-latest
