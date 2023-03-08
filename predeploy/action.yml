@@ -22,6 +22,6 @@ runs:
       shell: bash
       run: echo "script=$(cat package.json | jq -r .scripts.predeploy)" >> $GITHUB_OUTPUT
     - shell: bash
-      if: ${{ steps.predeploy.outputs.script }}
+      if: ${{ steps.predeploy.outputs.script != 'null' }}
       name: Run predeploy script
       run: yarn predeploy
