@@ -58,10 +58,9 @@ jobs:
     concurrency:
       group: cloudformation-dev
     steps:
-      - uses: stampedeapp/actions/predeploy@wip
-        with: 
-          ldt-environment: dev
+      - uses: stampedeapp/actions/predeploy@main
         env:
+          LDT_ENVIRONMENT: dev
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:

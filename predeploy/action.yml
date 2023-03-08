@@ -8,9 +8,6 @@ inputs:
       If not provided, will skip the code freeze check
     required: false
     default: ''
-  ldt-environment:
-    description: The environment to set LDT_ENV to.
-    required: true
 
 runs:
   using: composite
@@ -28,5 +25,3 @@ runs:
       if: ${{ steps.predeploy.outputs.script }}
       name: Run predeploy script
       run: yarn predeploy
-      env:
-        LDT_ENV: ${{ inputs.ldt-environment }}
