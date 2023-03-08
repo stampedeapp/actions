@@ -31,6 +31,9 @@ inputs:
     description: Whether to reuse an existing image if it exists.
     required: false
     default: 'false'
+  cloudformation-role-arn:
+    description: The ARN of the role to assume for CloudFormation deployments.
+    required: true
     
 runs:
   using: composite
@@ -46,7 +49,7 @@ runs:
       shell: bash
       run: |
         aws sts assume-role \
-          --role-arn ${{ env.CLOUDFORMATION_ROLE_ARN }} \
+          --role-arn ${{ inputs.cloudformation-role-arn }} \
           --role-session-name github-actions-cloudformation \
           --query 'Credentials' \
           --output json > /tmp/credentials
