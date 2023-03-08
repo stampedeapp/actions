@@ -79,7 +79,7 @@ jobs:
         with: 
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
         env:
-          LDT_ENVIRONMENT: staging
+          LDT_ENV: staging
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
         with:
