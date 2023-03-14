@@ -21,6 +21,7 @@ inputs:
     description: The AWS region to use for deployment.
     default: eu-west-1
 
+
 outputs:
   stack-id:
     description: The ID of the created stack
