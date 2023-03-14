@@ -2,6 +2,9 @@ name: Deploy stack to Cloudformation
 description: Deploy stack to Cloudformation
 
 inputs:
+  npm-token:
+    description: The NPM token to use for deployment.
+    required: true
   stack-name:
     required: true
     description: Name of the stack to update
@@ -20,6 +23,12 @@ inputs:
     required: false
     description: The AWS region to use for deployment.
     default: eu-west-1
+  docker-hub-username:
+    description: The Docker Hub username to use for deployment.
+    required: true
+  docker-hub-password:
+    description: The Docker Hub password to use for deployment.
+    required: true
 
 outputs:
   stack-id:
