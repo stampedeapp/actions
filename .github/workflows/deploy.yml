@@ -49,7 +49,7 @@ jobs:
         env:
           LDT_ENV: dev
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
-      - uses: stampedeapp/actions/deploy-to-cloudformation-cli@main
+      - uses: stampedeapp/actions/deploy@luke/deploy-to-cloudformation-environments
         with:
           stack-name: ${{ inputs.stack-name }}
           ldt-environment: dev
