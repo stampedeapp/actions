@@ -46,17 +46,15 @@ runs:
         echo "AWS_DEFAULT_REGION=${{ inputs.region }}" >> $GITHUB_ENV
         echo "AWS_REGION=${{ inputs.region }}" >> $GITHUB_ENV
 
-    - name: Get ECR Image
-      shell: bash
-      id: get-ecr-image
-      run: |
-        echo "registry-id=$(
-          aws ecr describe-images \
-            --repository-name ${{ github.event.repository.name }} \
-            --image-ids imageTag='${{ inputs.ldt-environment }}-${{ inputs.github-sha }}' \
-            --query 'imageDetails[0].registryId' \
-            --output text
-        )" >> $GITHUB_OUTPUT
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ inputs.docker-hub-username }}
+        password: ${{ inputs.docker-hub-password }}
 
     - name: Assume cloudformation role
       shell: bash
@@ -73,6 +71,44 @@ runs:
         echo "::add-mask::$AWS_SECRET_ACCESS_KEY" &>/dev/null
         echo "::add-mask::$AWS_ACCESS_KEY_ID" &>/dev/null
 
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@master
+      with:
+        install: true
+
+    - name: Cache Docker layers
+      id: cache-docker
+      uses: actions/cache@v3
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
+        restore-keys: |
+          ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}
+  
+    - name: Build, tag, and push docker image to Amazon ECR Public
+      id: build-push
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        builder: ${{ steps.buildx.outputs.name }}
+        push: true
+        tags: ${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ inputs.github-sha }}
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+        build-args: |
+          NPM_TOKEN=${{ inputs.npm-token }}
+          COMMIT_HASH=${{ inputs.github-sha }}
+        labels: |
+          org.opencontainers.image.revision=${{ inputs.github-sha }}
+          org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+
+    - name: Move cache
+      shell: bash
+      run: |
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
     - name: Deploy to cloudformation
       shell: bash
       id: deploy-to-cloudformation
@@ -83,7 +119,7 @@ runs:
           --capabilities CAPABILITY_NAMED_IAM \
           --parameter-overrides \
             $(cat configs/${{ inputs.ldt-environment }}.json | jq -r '.Parameters | to_entries[] | "\(.key)=\(.value)"') \
-            ECRImage=${{ steps.get-ecr-image.outputs.registry-id }}.dkr.ecr.${{ inputs.region }}.amazonaws.com/${{ github.event.repository.name }}:${{ inputs.ldt-environment }}-${{ inputs.github-sha }} \
+            ECRImage=${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ inputs.github-sha }}
             CommitHash=${{ inputs.github-sha }} \
             ${{ inputs.extra-flags }}
 
