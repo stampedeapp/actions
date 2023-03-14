@@ -102,7 +102,7 @@ runs:
         context: .
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: ${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ inputs.github-sha }}
+        tags: ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.github-sha }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
         build-args: |
@@ -128,7 +128,7 @@ runs:
           --capabilities CAPABILITY_NAMED_IAM \
           --parameter-overrides \
             $(cat configs/${{ inputs.ldt-environment }}.json | jq -r '.Parameters | to_entries[] | "\(.key)=\(.value)"') \
-            ECRImage=${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ inputs.github-sha }}
+            ECRImage=${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.github-sha }}
             CommitHash=${{ inputs.github-sha }} \
             ${{ inputs.extra-flags }}
 
