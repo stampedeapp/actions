@@ -55,16 +55,6 @@ runs:
         echo "AWS_DEFAULT_REGION=${{ inputs.region }}" >> $GITHUB_ENV
         echo "AWS_REGION=${{ inputs.region }}" >> $GITHUB_ENV
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ inputs.docker-hub-username }}
-        password: ${{ inputs.docker-hub-password }}
-
     - name: Assume cloudformation role
       shell: bash
       run: |
@@ -79,6 +69,16 @@ runs:
         echo "::add-mask::$AWS_SESSION_TOKEN" &>/dev/null
         echo "::add-mask::$AWS_SECRET_ACCESS_KEY" &>/dev/null
         echo "::add-mask::$AWS_ACCESS_KEY_ID" &>/dev/null
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ inputs.docker-hub-username }}
+        password: ${{ inputs.docker-hub-password }}
 
     - name: Set up Docker Buildx
       id: buildx
