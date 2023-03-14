@@ -41,7 +41,6 @@ jobs:
     environment: Development
     needs:
       - static
-      - build
     concurrency:
       group: cloudformation-dev
     steps:
