@@ -109,7 +109,7 @@ runs:
       uses: stampedeapp/actions/nextjs-build@main
       env:
         LDT_SENTRY_DRYRUN: "false"
-        DOPPLER_TOKEN: ${{ inputs.DOPPLER_DEPLOY_TOKEN }}
+        DOPPLER_TOKEN: ${{ inputs.DOPPLER_TOKEN }}
         SENTRY_AUTH_TOKEN: ${{ inputs.SENTRY_AUTH_TOKEN }}
 
     - name: Push resources to S3
