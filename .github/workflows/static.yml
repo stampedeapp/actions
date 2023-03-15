@@ -15,15 +15,22 @@ env:
   CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_KEY }}
 
 jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: stampedeapp/actions/install-dependencies@main
+      
   typecheck:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: install
     steps:
       - uses: stampedeapp/actions/setup@main
       - run: yarn tsc
   lint:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: install
     steps:
       - uses: stampedeapp/actions/setup@main
       - run: yarn lint
@@ -61,6 +68,7 @@ jobs:
   jest:
     runs-on: ubuntu-latest-8-cores
     timeout-minutes: 30
+    needs: install
     steps:
       - uses: stampedeapp/actions/setup@main
         with:

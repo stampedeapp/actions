@@ -21,14 +21,8 @@ env:
   CLOUDFORMATION_ROLE_ARN: ${{ secrets.CLOUDFORMATION_ROLE_ARN }}
 
 jobs:
-  install:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: stampedeapp/actions/install-dependencies@main
-
   static:
     uses: stampedeapp/actions/.github/workflows/static.yml@main
-    needs: install
     secrets: inherit
     with:
       test-setup-command: ${{ inputs.test-setup-command }}
