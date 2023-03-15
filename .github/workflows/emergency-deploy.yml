@@ -58,4 +58,7 @@ jobs:
           docker-hub-username: ${{ secrets.DOCKER_USERNAME }}
           docker-hub-password: ${{ secrets.DOCKER_PASSWORD }}
           github-sha: ${{ inputs.sha }}
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_DEPLOY_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          s3-path: ${{ secrets.S3_PATH }}
 
