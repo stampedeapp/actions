@@ -39,11 +39,6 @@ inputs:
     description: S3 Bucket to upload Next.JS assets to
     required: false
 
-outputs:
-  stack-id:
-    description: The ID of the created stack
-    value: ${{ steps.deploy-to-cloudformation.outputs.stack-id }}
-
 runs:
   using: composite
   steps:
