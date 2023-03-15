@@ -105,6 +105,7 @@ runs:
         files: "next.config.js"
 
     - name: Next.JS Build
+      if: steps.is_nextjs.outputs.file_exists == 'true'
       uses: stampedeapp/actions/nextjs-build@main
       env:
         LDT_SENTRY_DRYRUN: "false"
