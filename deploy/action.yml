@@ -29,6 +29,15 @@ inputs:
   docker-hub-password:
     description: The Docker Hub password to use for deployment.
     required: true
+  DOPPLER_DEPLOY_TOKEN:
+    description: Doppler token to build Next.JS deploy with
+    required: false
+  SENTRY_AUTH_TOKEN:
+    description: Sentry token to build Next.JS deploy with
+    required: false
+  s3-path:
+    description: S3 Bucket to upload Next.JS assets to
+    required: false
 
 outputs:
   stack-id:
@@ -38,12 +47,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Checkout files
-      uses: Bhacaz/checkout-files@v2
-      with:
-        files: cloudformation/cloudformation.yaml configs/${{ inputs.ldt-environment }}.json
-        branch: ${{ inputs.github-sha }}
-
     - name: Validate Cloudformation Files
       uses: stampedeapp/actions/cloudformation-validate@main
       with:
@@ -94,6 +97,24 @@ runs:
         key: ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
         restore-keys: |
           ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}
+
+    - name: Check file existence
+      id: is_nextjs
+      uses: andstor/file-existence-action@v2
+      with:
+        files: "next.config.js"
+
+    - name: Next.JS Build
+      uses: stampedeapp/actions/nextjs-build@main
+      env:
+        LDT_SENTRY_DRYRUN: "false"
+        DOPPLER_TOKEN: ${{ inputs.DOPPLER_DEPLOY_TOKEN }}
+        SENTRY_AUTH_TOKEN: ${{ inputs.SENTRY_AUTH_TOKEN }}
+
+    - name: Push resources to S3
+      if: steps.is_nextjs.outputs.file_exists == 'true'
+      shell: bash
+      run: aws s3 sync .next/static ${{ inputs.s3-path }}/_next/static --acl public-read --exclude "*.map"
   
     - name: Build, tag, and push docker image to Amazon ECR Public
       id: build-push
