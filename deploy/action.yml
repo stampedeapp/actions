@@ -29,7 +29,7 @@ inputs:
   docker-hub-password:
     description: The Docker Hub password to use for deployment.
     required: true
-  DOPPLER_DEPLOY_TOKEN:
+  DOPPLER_TOKEN:
     description: Doppler token to build Next.JS deploy with
     required: false
   SENTRY_AUTH_TOKEN:
