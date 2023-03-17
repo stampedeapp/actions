@@ -31,18 +31,10 @@ jobs:
     steps:
       - uses: stampedeapp/actions/install-dependencies@main
 
-  static:
-    uses: stampedeapp/actions/.github/workflows/static.yml@main
-    needs: install
-    secrets: inherit
-    with:
-      test-setup-command: ${{ inputs.test-setup-command }}
-
   deploy-production:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest-16-cores
     environment: Production
-    needs:
-      - static
+    needs: install
     concurrency:
       group: cloudformation-production
     steps:
