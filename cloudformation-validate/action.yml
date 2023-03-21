@@ -4,6 +4,11 @@ inputs:
   environment:
     description: Environment JSON file to validate
     required: true
+  working-directory:
+    description: Directory to run the pipeline in
+    required: false
+    default: '.'
+
 runs:
   using: "node16"
   main: "index.js"

@@ -12,17 +12,26 @@ on:
         description: Command to run to setup the test environment
         required: false
         default: ''
+      working-directory:
+        type: string
+        description: Directory to run the pipeline in
+        required: false
+        default: '.'
+
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   CLOUDFORMATION_ROLE_ARN: ${{ secrets.CLOUDFORMATION_ROLE_ARN }}
+  WORKING_DIRECTORY: ${{ inputs.working-directory }}
 
 jobs:
   install:
     runs-on: ubuntu-latest
     steps:
       - uses: stampedeapp/actions/install-dependencies@main
+        with:
+          working-directory: ${{ inputs.working-directory }}
 
   static:
     uses: stampedeapp/actions/.github/workflows/static.yml@main
@@ -30,6 +39,7 @@ jobs:
     secrets: inherit
     with:
       test-setup-command: ${{ inputs.test-setup-command }}
+      working-directory: ${{ inputs.working-directory }}
   
   execute-changeset:
     runs-on: ubuntu-latest-16-cores
@@ -53,4 +63,5 @@ jobs:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_DEPLOY_TOKEN }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           s3-path: ${{ secrets.S3_PATH }}
+          working-directory: ${{ inputs.working-directory }}
 

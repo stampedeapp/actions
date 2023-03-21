@@ -10,6 +10,10 @@ inputs:
     description: The branch, tag or SHA to checkout.
     default: ''
     required: false
+  working-directory:
+    description: Directory to run the pipeline in
+    required: false
+    default: '.'
 
 runs:
   using: composite
@@ -20,11 +24,12 @@ runs:
     - uses: martijnhols/actions-cache/restore@v3
       id: cache
       with:
-        path: node_modules
-        key: ${{ runner.os }}-yarn-${{ inputs.production }}-${{ hashFiles('**/yarn.lock') }}
+        path: ${{ inputs.working-directory }}/node_modules
+        key: ${{ runner.os }}-yarn-${{ inputs.production }}-${{ inputs.working-directory }}-${{ hashFiles('**/yarn.lock') }}
     - name: Ensure cache hit
       shell: bash
       if: ${{ steps.cache.outputs.cache-hit != 'true' && env.NODE_AUTH_TOKEN == '' }}
+      working-directory: ${{ inputs.working-directory }}
       run: |
         echo "Could not find cache result for the current workflow."
         echo "This means that something went wrong with the 'install-dependencies' step before this job was run."
@@ -35,7 +40,9 @@ runs:
       with:
         node-version-file: ".nvmrc"
         registry-url: "https://registry.npmjs.org"
+        cache-dependency-path: ${{ inputs.working-directory }}/yarn.lock
     - name: Install Dependencies
       if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+      working-directory: ${{ inputs.working-directory }}
       run: yarn --frozen-lockfile --quiet --production=${{ inputs.production }}
       shell: bash

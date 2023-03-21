@@ -11,12 +11,17 @@ inputs:
   workers:
     description: number of jest workers to run with
     default: "2"
+  working-directory:
+    description: Directory to run the pipeline in
+    required: false
+    default: '.'
 
 runs:
   using: composite
   steps:
     - name: Run Jest
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: yarn jest --maxWorkers=${{ inputs.workers }} --shard=${{ inputs.shard-number }}/${{ inputs.shard-total }} --ci --coverage --coverageReporters=cobertura --testLocationInResults --forceExit
       env:
         NODE_ENV: test

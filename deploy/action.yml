@@ -38,23 +38,30 @@ inputs:
   s3-path:
     description: S3 Bucket to upload Next.JS assets to
     required: false
+  working-directory:
+    description: Directory to run the pipeline in
+    required: false
+    default: '.'
 
 runs:
   using: composite
   steps:
     - name: Validate Cloudformation Files
       uses: stampedeapp/actions/cloudformation-validate@main
+      working-directory: ${{ inputs.working-directory }}
       with:
         environment: ${{ inputs.ldt-environment }}
       
     - name: Configure AWS credentials
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
         echo "AWS_DEFAULT_REGION=${{ inputs.region }}" >> $GITHUB_ENV
         echo "AWS_REGION=${{ inputs.region }}" >> $GITHUB_ENV
 
     - name: Assume cloudformation role
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
         aws sts assume-role \
           --role-arn ${{ env.CLOUDFORMATION_ROLE_ARN }} \
@@ -70,10 +77,12 @@ runs:
 
     - name: Login to Amazon ECR
       id: login-ecr
+      working-directory: ${{ inputs.working-directory }}
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Login to Docker Hub
       uses: docker/login-action@v2
+      working-directory: ${{ inputs.working-directory }}
       with:
         username: ${{ inputs.docker-hub-username }}
         password: ${{ inputs.docker-hub-password }}
@@ -81,12 +90,14 @@ runs:
     - name: Set up Docker Buildx
       id: buildx
       uses: docker/setup-buildx-action@master
+      working-directory: ${{ inputs.working-directory }}
       with:
         install: true
 
     - name: Cache Docker layers
       id: cache-docker
       uses: actions/cache@v3
+      working-directory: ${{ inputs.working-directory }}
       with:
         path: /tmp/.buildx-cache
         key: ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}-${{ inputs.github-sha }}
@@ -96,12 +107,14 @@ runs:
     - name: Check file existence
       id: is_nextjs
       uses: andstor/file-existence-action@v2
+      working-directory: ${{ inputs.working-directory }}
       with:
         files: "next.config.js"
 
     - name: Next.JS Build
       if: steps.is_nextjs.outputs.files_exists == 'true'
       uses: stampedeapp/actions/nextjs-build@main
+      working-directory: ${{ inputs.working-directory }}
       env:
         LDT_SENTRY_DRYRUN: "false"
         DOPPLER_TOKEN: ${{ inputs.DOPPLER_TOKEN }}
@@ -110,11 +123,13 @@ runs:
     - name: Push resources to S3
       if: steps.is_nextjs.outputs.files_exists == 'true'
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: aws s3 sync .next/static ${{ inputs.s3-path }}/_next/static --acl public-read --exclude "*.map"
   
     - name: Build, tag, and push docker image to Amazon ECR Public
       id: build-push
       uses: docker/build-push-action@v3
+      working-directory: ${{ inputs.working-directory }}
       with:
         context: .
         builder: ${{ steps.buildx.outputs.name }}
@@ -132,6 +147,7 @@ runs:
 
     - name: Move cache
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
@@ -139,6 +155,7 @@ runs:
     - name: Deploy to cloudformation
       shell: bash
       id: deploy-to-cloudformation
+      working-directory: ${{ inputs.working-directory }}
       run: |
         aws cloudformation deploy \
           --stack-name ${{ inputs.stack-name }} \
@@ -153,6 +170,7 @@ runs:
     - name: Describe failure
       shell: bash
       if: ${{ always() && steps.deploy-to-cloudformation.outcome == 'failure' }}
+      working-directory: ${{ inputs.working-directory }}
       run: |
         aws cloudformation describe-stack-events \
           --stack-name ${{ inputs.stack-name }} \

@@ -8,6 +8,11 @@ on:
         description: Command to run to setup the test environment
         required: false
         default: ""
+      working-directory:
+        type: string
+        description: Directory to run the pipeline in
+        required: false
+        default: "."
 
 env:
   DEEPSOURCE_DSN: "${{ secrets.DEEPSOURCE_DSN }}"
@@ -20,13 +25,19 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: stampedeapp/actions/setup@main
+        with: 
+          working-directory: ${{ inputs.working-directory }}
       - run: yarn tsc
+        working-directory: ${{ inputs.working-directory }}
   lint:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: stampedeapp/actions/setup@main
+        with: 
+          working-directory: ${{ inputs.working-directory }}
       - run: yarn lint
+        working-directory: ${{ inputs.working-directory }}
 
   cloudformation:
     name: Cloudformation Lint
@@ -39,13 +50,13 @@ jobs:
         uses: andstor/file-existence-action@v2
         id: check_files
         with:
-          files: "cloudformation/cloudformation.yaml"
+          files: "${{ inputs.working-directory }}/cloudformation/cloudformation.yaml"
 
       - name: CFN Lint
         uses: scottbrenner/cfn-lint-action@v2
         if: steps.check_files.outputs.files_exists == 'true'
         with:
-          command: cfn-lint -r eu-west-1 -t ./cloudformation/cloudformation.yaml
+          command: cd ${{ inputs.working-directory }} ; cfn-lint -r eu-west-1 -t ./cloudformation/cloudformation.yaml
 
   cloudformation-parameters-validation:
     runs-on: ubuntu-latest
@@ -56,23 +67,29 @@ jobs:
     steps:
       - uses: actions/checkout@v3.1.0
       - uses: stampedeapp/actions/cloudformation-validate@main
-        with: 
+        with:
           environment: ${{ matrix.environment }}
+          working-directory: ${{ inputs.working-directory }}
   jest:
     runs-on: ubuntu-latest-4-cores
     timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
     steps:
       - uses: stampedeapp/actions/setup@main
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+          working-directory: ${{ inputs.working-directory }}
       - run: ${{ inputs.test-setup-command }}
         if: ${{ inputs.test-setup-command != '' }}
       - run: curl https://deepsource.io/cli | sh
       - uses: stampedeapp/actions/jest@main
         with:
           workers: 2
+          working-directory: ${{ inputs.working-directory }}
       - if: ${{ always() && env.DEEPSOURCE_DSN != '' }}
-        run: ./bin/deepsource report --analyzer test-coverage --key javascript --value-file ./coverage/cobertura-coverage.xml
+        run: cd ${{ inputs.working-directory }}; ./bin/deepsource report --analyzer test-coverage --key javascript --value-file ./coverage/cobertura-coverage.xml
         
 
 

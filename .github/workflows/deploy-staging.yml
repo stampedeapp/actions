@@ -17,6 +17,11 @@ on:
         description: Command to run to setup the test environment
         required: false
         default: ''
+      working-directory:
+        type: string
+        description: Directory to run the pipeline in
+        required: false
+        default: '.'
 
 
 env:
@@ -30,6 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: stampedeapp/actions/install-dependencies@main
+        with:
+          working-directory: ${{ inputs.working-directory }}
 
   static:
     uses: stampedeapp/actions/.github/workflows/static.yml@main
@@ -37,6 +44,7 @@ jobs:
     secrets: inherit
     with:
       test-setup-command: ${{ inputs.test-setup-command }}
+      working-directory: ${{ inputs.working-directory }}
   
   deploy-staging:
     runs-on: ubuntu-latest-16-cores
@@ -49,6 +57,7 @@ jobs:
       - uses: stampedeapp/actions/predeploy@main
         with: 
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
+          working-directory: ${{ inputs.working-directory }}
         env:
           LDT_ENV: staging
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
@@ -62,6 +71,7 @@ jobs:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_DEPLOY_TOKEN }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           s3-path: ${{ secrets.S3_PATH }}
+          working-directory: ${{ inputs.working-directory }}
 
   e2e-testing:
     runs-on: ubuntu-latest
@@ -74,6 +84,8 @@ jobs:
         shard: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - uses: stampedeapp/actions/setup@main
+        with:
+          working-directory: ${{ inputs.working-directory }}
       - uses: stampedeapp/actions/run-cypress@main
         timeout-minutes: 30
         with: 
