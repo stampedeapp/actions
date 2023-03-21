@@ -56,7 +56,7 @@ jobs:
         uses: scottbrenner/cfn-lint-action@v2
         if: steps.check_files.outputs.files_exists == 'true'
         with:
-          command: cd ${{ inputs.working-directory }} ; cfn-lint -r eu-west-1 -t ./cloudformation/cloudformation.yaml
+          command: cfn-lint -r eu-west-1 -t ${{ inputs.working-directory }}/cloudformation/cloudformation.yaml
 
   cloudformation-parameters-validation:
     runs-on: ubuntu-latest
