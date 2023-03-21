@@ -51,7 +51,7 @@ jobs:
     needs:
       - static
     concurrency:
-      group: cloudformation-staging
+      group: ${{ inputs.stack-name }}-Staging
     steps:
       - uses: stampedeapp/actions/predeploy@monorepo
         with: 
@@ -104,7 +104,7 @@ jobs:
       - e2e-testing
     if: ${{ always() && (inputs.run-e2e-tests == 'false' || needs.e2e-testing.result == 'success') && (needs.deploy-staging.result == 'success') }}
     concurrency:
-      group: cloudformation-production
+      group: ${{ inputs.stack-name }}-Production
     steps:
       - uses: stampedeapp/actions/predeploy@monorepo
         with: 

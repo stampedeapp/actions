@@ -52,7 +52,7 @@ jobs:
     needs:
       - static
     concurrency:
-      group: cloudformation-staging
+      group: ${{ inputs.stack-name }}-Staging
     steps:
       - uses: stampedeapp/actions/predeploy@monorepo
         with: 
