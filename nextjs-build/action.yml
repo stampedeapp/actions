@@ -1,6 +1,12 @@
 name: Next.JS Build
 description: Builds the Next.JS application
 
+inputs:
+  working-directory:
+    description: Directory to run the pipeline in
+    required: false
+    default: '.'
+
 runs:
   using: composite
   steps:
@@ -21,6 +27,7 @@ runs:
    
     - name: Build
       run: doppler run -- yarn build
+      working-directory: ${{ inputs.working-directory }}
       shell: bash
       env:
         # Increase max heap size to make the build run as efficiently as possible

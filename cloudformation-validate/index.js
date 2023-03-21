@@ -2,21 +2,22 @@ const { yamlParse } = require("yaml-cfn");
 const core = require("@actions/core");
 const fs = require("fs");
 const path = require("path");
-const sortKeys = require("sort-keys");
 
 const environment = core.getInput("environment");
+const workingDirectoryInput = core.getInput("working-directory");
+const cwd = path.join(process.cwd(), workingDirectoryInput);
 if (!environment) {
   throw new Error(`Environment not specified`);
 }
 
 const cloudformationFile = path.join(
-  process.cwd(),
+  cwd,
   "cloudformation",
   "cloudformation.yaml"
 );
 
 const environmentFile = path.join(
-  process.cwd(),
+  cwd,
   "configs",
   environment + ".json"
 );
@@ -57,5 +58,5 @@ if (disallowedParameters.length) {
   const failureMessage = failureMessages.join("\n");
   core.setFailed(failureMessage);
 } else {
-  core.info(`${environment}.json is all good!`)
+  core.info(`${environment}.json is all good!`);
 }
