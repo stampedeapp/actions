@@ -20,7 +20,7 @@ on:
 
 jobs:
   ci:
-    uses: stampedeapp/actions/.github/workflows/emergency-deploy.yml@main
+    uses: stampedeapp/actions/.github/workflows/emergency-deploy.yml@monorepo
     secrets: inherit
     with:
       stack-name: <%= stack %>

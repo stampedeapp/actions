@@ -10,7 +10,7 @@ runs:
   using: composite
 
   steps:
-    - uses: stampedeapp/codeclimate-action@main
+    - uses: stampedeapp/codeclimate-action@monorepo
       with:
         coverageLocations: |
           ${{github.workspace}}/coverage/*.lcov:lcov

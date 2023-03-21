@@ -50,7 +50,7 @@ jobs:
     concurrency:
       group: cloudformation-${{ inputs.ldt-environment }}
     steps:
-      - uses: stampedeapp/actions/deploy@main
+      - uses: stampedeapp/actions/deploy@monorepo
         with:
           stack-name: ${{ inputs.stack-name }}
           ldt-environment: ${{ inputs.ldt-environment }}

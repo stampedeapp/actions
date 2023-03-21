@@ -12,7 +12,7 @@ on:
 
 jobs:
   ci:
-    uses: stampedeapp/actions/.github/workflows/deploy-production.yml@main
+    uses: stampedeapp/actions/.github/workflows/deploy-production.yml@monorepo
     secrets: inherit
     with:
       stack-name: <%= stack %>

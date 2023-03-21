@@ -9,7 +9,7 @@ jobs:
   type-coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: stampedeapp/actions/setup@main
+      - uses: stampedeapp/actions/setup@monorepo
       - run: yarn global add type-coverage typescript
       - name: Get type coverage
         run: |

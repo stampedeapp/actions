@@ -34,12 +34,12 @@ jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-      - uses: stampedeapp/actions/install-dependencies@main
+      - uses: stampedeapp/actions/install-dependencies@monorepo
         with:
           working-directory: ${{ inputs.working-directory }}
 
   static:
-    uses: stampedeapp/actions/.github/workflows/static.yml@main
+    uses: stampedeapp/actions/.github/workflows/static.yml@monorepo
     needs: install
     secrets: inherit
     with:
@@ -54,14 +54,14 @@ jobs:
     concurrency:
       group: cloudformation-staging
     steps:
-      - uses: stampedeapp/actions/predeploy@main
+      - uses: stampedeapp/actions/predeploy@monorepo
         with: 
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
           working-directory: ${{ inputs.working-directory }}
         env:
           LDT_ENV: staging
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
-      - uses: stampedeapp/actions/deploy@main
+      - uses: stampedeapp/actions/deploy@monorepo
         with:
           stack-name: ${{ inputs.stack-name }}
           ldt-environment: staging
@@ -83,10 +83,10 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
-      - uses: stampedeapp/actions/setup@main
+      - uses: stampedeapp/actions/setup@monorepo
         with:
           working-directory: ${{ inputs.working-directory }}
-      - uses: stampedeapp/actions/run-cypress@main
+      - uses: stampedeapp/actions/run-cypress@monorepo
         timeout-minutes: 30
         with: 
           e2e-testing-key: ${{ secrets.E2E_TESTING_KEY }}

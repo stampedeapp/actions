@@ -16,8 +16,8 @@ jobs:
   install-dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: stampedeapp/actions/install-dependencies@main
+      - uses: stampedeapp/actions/install-dependencies@monorepo
   static:
     needs: install-dependencies
-    uses: stampedeapp/actions/.github/workflows/static.yml@main
+    uses: stampedeapp/actions/.github/workflows/static.yml@monorepo
     secrets: inherit

@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: stampedeapp/actions/setup@main
+      - uses: stampedeapp/actions/setup@monorepo
         with: 
           working-directory: ${{ inputs.working-directory }}
       - run: yarn tsc
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: stampedeapp/actions/setup@main
+      - uses: stampedeapp/actions/setup@monorepo
         with: 
           working-directory: ${{ inputs.working-directory }}
       - run: yarn lint
@@ -66,7 +66,7 @@ jobs:
         environment: ["dev", "staging", "prod"]
     steps:
       - uses: actions/checkout@v3.1.0
-      - uses: stampedeapp/actions/cloudformation-validate@main
+      - uses: stampedeapp/actions/cloudformation-validate@monorepo
         with:
           environment: ${{ matrix.environment }}
           working-directory: ${{ inputs.working-directory }}
@@ -77,14 +77,14 @@ jobs:
       run:
         working-directory: ${{ inputs.working-directory }}
     steps:
-      - uses: stampedeapp/actions/setup@main
+      - uses: stampedeapp/actions/setup@monorepo
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           working-directory: ${{ inputs.working-directory }}
       - run: ${{ inputs.test-setup-command }}
         if: ${{ inputs.test-setup-command != '' }}
       - run: curl https://deepsource.io/cli | sh
-      - uses: stampedeapp/actions/jest@main
+      - uses: stampedeapp/actions/jest@monorepo
         with:
           workers: 2
           working-directory: ${{ inputs.working-directory }}

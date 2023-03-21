@@ -29,7 +29,7 @@ jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-      - uses: stampedeapp/actions/install-dependencies@main
+      - uses: stampedeapp/actions/install-dependencies@monorepo
 
   deploy-production:
     runs-on: ubuntu-latest-16-cores
@@ -38,14 +38,14 @@ jobs:
     concurrency:
       group: cloudformation-production
     steps:
-      - uses: stampedeapp/actions/predeploy@main
+      - uses: stampedeapp/actions/predeploy@monorepo
         with: 
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
         env:
           LDT_ENV: production
           MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
           
-      - uses: stampedeapp/actions/deploy@main
+      - uses: stampedeapp/actions/deploy@monorepo
         with:
           stack-name: ${{ inputs.stack-name }}
           ldt-environment: prod

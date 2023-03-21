@@ -16,11 +16,11 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: stampedeapp/actions/check-code-freeze@main
+    - uses: stampedeapp/actions/check-code-freeze@monorepo
       if: ${{ inputs.github-token != '' }}
       with:
         github-token: ${{ inputs.github-token }}
-    - uses: stampedeapp/actions/setup@main
+    - uses: stampedeapp/actions/setup@monorepo
       with:
         working-directory: ${{ inputs.working-directory }}
     - id: predeploy

@@ -37,7 +37,7 @@ runs:
         branch: ${{ inputs.github-sha }}
 
     - name: Validate Cloudformation Files
-      uses: stampedeapp/actions/cloudformation-validate@main
+      uses: stampedeapp/actions/cloudformation-validate@monorepo
       with:
         environment: ${{ inputs.ldt-environment }}
       
