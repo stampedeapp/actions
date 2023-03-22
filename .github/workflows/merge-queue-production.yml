@@ -7,16 +7,6 @@ on:
         type: string
         description: Name of the stack to deploy to
         required: true
-      run-e2e-tests:
-        type: string
-        description: Run e2e tests before deploying
-        required: false
-        default: 'false'
-      test-setup-command:
-        type: string
-        description: Command to run to setup the test environment
-        required: false
-        default: ''
 
 
 env:
