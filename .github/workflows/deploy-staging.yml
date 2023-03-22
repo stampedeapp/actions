@@ -22,7 +22,10 @@ on:
         description: Directory to run the pipeline in
         required: false
         default: '.'
-
+      repository-name:
+        type: string
+        description: ECR Repository to deploy to
+        required: true
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
@@ -72,6 +75,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           s3-path: ${{ secrets.S3_PATH }}
           working-directory: ${{ inputs.working-directory }}
+          repository-name: ${{ inputs.repository-name }}
 
   e2e-testing:
     runs-on: ubuntu-latest
