@@ -73,6 +73,7 @@ jobs:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_DEPLOY_TOKEN }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           s3-path: ${{ secrets.S3_PATH }}
+          working-directory: ${{ inputs.working-directory }}
           repository-name: ${{ inputs.repository-name }}
 
   e2e-testing:
