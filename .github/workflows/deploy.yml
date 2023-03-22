@@ -20,8 +20,7 @@ on:
       repository-name:
         type: string
         description: ECR Repository to deploy to
-        required: false
-        default: ''
+        required: true
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
