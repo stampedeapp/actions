@@ -15,7 +15,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v3.5
+    - uses: actions/checkout@v3.5.0
     - id: check-cache
       uses: martijnhols/actions-cache/check@v3
       with:
