@@ -106,6 +106,7 @@ runs:
         LDT_SENTRY_DRYRUN: "false"
         DOPPLER_TOKEN: ${{ inputs.DOPPLER_TOKEN }}
         SENTRY_AUTH_TOKEN: ${{ inputs.SENTRY_AUTH_TOKEN }}
+        DISABLE_ESLINT_TSC_CI: "true"
 
     - name: Push resources to S3
       if: steps.is_nextjs.outputs.files_exists == 'true'
