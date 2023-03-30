@@ -42,7 +42,7 @@ jobs:
         with:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
 
-  cloudformation-lint:
+  cloudformation:
     runs-on: ubuntu-latest
     needs: codefreeze
     name: "Cloudformation Validate"
