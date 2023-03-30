@@ -16,13 +16,11 @@ runs:
       if: ${{ inputs.github-token != '' }}
       with:
         github-token: ${{ inputs.github-token }}
-    - uses: actions/checkout@v3.5.0
+    - uses: stampedeapp/actions/setup@main
     - id: predeploy
       name: Check for predeploy script
       shell: bash
       run: echo "script=$(cat package.json | jq -r .scripts.predeploy)" >> $GITHUB_OUTPUT
-    - uses: stampedeapp/actions/setup@main
-      if: ${{ steps.predeploy.outputs.script != 'null' }}
     - shell: bash
       if: ${{ steps.predeploy.outputs.script != 'null' }}
       name: Run predeploy script
