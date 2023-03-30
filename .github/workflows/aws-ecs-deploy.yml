@@ -151,7 +151,7 @@ jobs:
 
   deploy-and-test:
     concurrency:
-      group: ${{ inputs.stack-name }}
+      group: ${{inputs.environment}}-${{ inputs.stack-name }}
     name: "AWS Deploy"
     uses: "stampedeapp/actions/.github/workflows/aws-ecs-deploy-and-test.yml@main"
     needs:

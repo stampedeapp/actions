@@ -43,12 +43,12 @@ jobs:
                 "username": "Emergency-o-matic"
               }
           PAYLOAD
-  
+
   execute-changeset:
     runs-on: ubuntu-latest-16-cores
     environment: ${{ inputs.environment }}
     concurrency:
-      group: cloudformation-${{ inputs.ldt-environment }}
+      group: ${{inputs.environment}}-${{ inputs.stack-name }}
     steps:
       - uses: stampedeapp/actions/deploy@main
         with:
@@ -61,4 +61,3 @@ jobs:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_DEPLOY_TOKEN }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           s3-path: ${{ secrets.S3_PATH }}
-
