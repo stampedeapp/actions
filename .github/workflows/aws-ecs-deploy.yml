@@ -123,7 +123,7 @@ jobs:
       - name: Push resources to S3
         if: steps.is_nextjs.outputs.files_exists == 'true'
         shell: bash
-        run: aws s3 sync .next/static ${{ secrets.S3_PATH }}/_next/static --acl public-read --exclude "*.map"
+        run: aws s3 sync .next/static ${{ secrets.S3_PATH }}/_next/static --acl public-read --exclude "*.map" &
 
       - name: Build, tag, and push docker image to Amazon ECR Public
         id: build-push
