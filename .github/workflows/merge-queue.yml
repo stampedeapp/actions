@@ -33,28 +33,13 @@ jobs:
       test-setup-command: ${{ inputs.test-setup-command }}
 
   deploy-staging:
-    runs-on: ubuntu-latest-16-cores
-    environment: Staging
     needs: install
-    concurrency:
-      group: cloudformation-staging
-    steps:
-      - uses: stampedeapp/actions/predeploy@main
-        with:
-          github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
-        env:
-          LDT_ENV: staging
-          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
-      - uses: stampedeapp/actions/deploy@main
-        with:
-          stack-name: ${{ inputs.stack-name }}
-          ldt-environment: staging
-          npm-token: ${{ secrets.NPM_READONLY_TOKEN }}
-          docker-hub-username: ${{ secrets.DOCKER_USERNAME }}
-          docker-hub-password: ${{ secrets.DOCKER_PASSWORD }}
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_DEPLOY_TOKEN }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          s3-path: ${{ secrets.S3_PATH }}
+    uses: stampedeapp/actions/.github/workflows/aws-ecs-deploy.yml@main
+    with:
+      ldt-environment: "staging"
+      stack-name: ${{ inputs.stack-name }}
+      environment: "Staging"
+    secrets: inherit
 
   e2e-testing:
     runs-on: ubuntu-latest
