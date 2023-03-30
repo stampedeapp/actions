@@ -1,0 +1,171 @@
+name: AWS - ECS Deploy
+
+on:
+  workflow_call:
+    inputs:
+      stack-name:
+        type: string
+        required: true
+        description: Name of the stack to update
+      region:
+        type: string
+        default: "eu-west-1"
+      environment:
+        type: string
+        required: true
+        description: GitHub environment that we want to deploy
+      ldt-env:
+        type: string
+        required: true
+        description: LDT_ENV variable value for predeploy
+      ldt-environment:
+        type: string
+        required: true
+        description: Name of the LDT config we're pushing
+
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest-16-cores
+    environment: ${{ inputs.environment }}
+    concurrency:
+      group: deploy-${{ inputs.environment }}
+    steps:
+      - uses: stampedeapp/actions/check-code-freeze@main
+        with:
+          github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
+
+      - uses: stampedeapp/actions/setup@main
+
+      - id: predeploy
+        name: Check for predeploy script
+        shell: bash
+        run: echo "script=$(cat package.json | jq -r .scripts.predeploy)" >> $GITHUB_OUTPUT
+
+      - shell: bash
+        if: ${{ steps.predeploy.outputs.script != 'null' }}
+        name: Run predeploy script
+        run: yarn predeploy
+        env:
+          LDT_ENV: ${{ inputs.ldt-env }}
+          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
+
+      - name: Validate Cloudformation Files
+        uses: stampedeapp/actions/cloudformation-validate@main
+        with:
+          environment: ${{ inputs.ldt-environment }}
+
+      - name: Configure AWS credentials
+        shell: bash
+        run: |
+          echo "AWS_DEFAULT_REGION=${{ inputs.region }}" >> $GITHUB_ENV
+          echo "AWS_REGION=${{ inputs.region }}" >> $GITHUB_ENV
+
+      - name: Assume cloudformation role
+        shell: bash
+        run: |
+          aws sts assume-role \
+            --role-arn ${{ env.CLOUDFORMATION_ROLE_ARN }} \
+            --role-session-name github-actions-cloudformation \
+            --query 'Credentials' \
+            --output json > /tmp/credentials
+          echo "AWS_ACCESS_KEY_ID=$(jq -r .AccessKeyId /tmp/credentials)" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=$(jq -r .SecretAccessKey /tmp/credentials)" >> $GITHUB_ENV
+          echo "AWS_SESSION_TOKEN=$(jq -r .SessionToken /tmp/credentials)" >> $GITHUB_ENV
+          echo "::add-mask::$AWS_SESSION_TOKEN" &>/dev/null
+          echo "::add-mask::$AWS_SECRET_ACCESS_KEY" &>/dev/null
+          echo "::add-mask::$AWS_ACCESS_KEY_ID" &>/dev/null
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
+        with:
+          install: true
+
+      - name: Cache Docker layers
+        id: cache-docker
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-multi-buildx-${{ inputs.ldt-environment }}
+
+      - name: Check file existence
+        id: is_nextjs
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "next.config.js"
+
+      - name: Next.JS Build
+        if: steps.is_nextjs.outputs.files_exists == 'true'
+        uses: stampedeapp/actions/nextjs-build@main
+        env:
+          LDT_SENTRY_DRYRUN: "false"
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_DEPLOY_TOKEN }}
+          DISABLE_ESLINT_TSC_CI: "true"
+
+      - name: Push resources to S3
+        if: steps.is_nextjs.outputs.files_exists == 'true'
+        shell: bash
+        run: aws s3 sync .next/static ${{ secrets.S3_PATH }}/_next/static --acl public-read --exclude "*.map"
+
+      - name: Build, tag, and push docker image to Amazon ECR Public
+        id: build-push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+          outputs: type=image,oci-mediatypes=true,compression=zstd,compression-level=3,force-compression=true
+          build-args: |
+            NPM_TOKEN=${{ secrets.NPM_READONLY_TOKEN }}
+            COMMIT_HASH=${{ github.sha }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+
+      - name: Move cache
+        shell: bash
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Deploy to cloudformation
+        shell: bash
+        id: deploy-to-cloudformation
+        run: |
+          aws cloudformation deploy \
+            --stack-name ${{ inputs.stack-name }} \
+            --template-file cloudformation/cloudformation.yaml \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides \
+              $(cat configs/${{ inputs.ldt-environment }}.json | jq -r '.Parameters | to_entries[] | "\(.key)=\(.value)"') \
+              ECRImage=${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:${{ github.sha }}
+              CommitHash=${{ github.sha }}
+
+      - name: Describe failure
+        shell: bash
+        if: ${{ always() && steps.deploy-to-cloudformation.outcome == 'failure' }}
+        run: |
+          aws cloudformation describe-stack-events \
+            --stack-name ${{ inputs.stack-name }} \
+            --query 'StackEvents[?ResourceStatus==`CREATE_FAILED`].ResourceStatusReason' \
+            --output text
