@@ -150,6 +150,10 @@ jobs:
     concurrency:
       group: ${{ inputs.stack-name }}
     uses: "stampedeapp/actions/.github/workflows/aws-ecs-deploy-and-test.yml@main"
+    needs:
+      - docker
+      - cloudformation
+    secrets: "inherit"
     with:
       stack-name: ${{ inputs.stack-name }}
       region: ${{ inputs.region }}
