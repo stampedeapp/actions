@@ -62,7 +62,7 @@ jobs:
         shell: bash
         run: |
           aws sts assume-role \
-            --role-arn ${{ env.CLOUDFORMATION_ROLE_ARN }} \
+            --role-arn ${{ secrets.CLOUDFORMATION_ROLE_ARN }} \
             --role-session-name github-actions-cloudformation \
             --query 'Credentials' \
             --output json > /tmp/credentials
