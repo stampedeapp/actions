@@ -24,6 +24,7 @@ jobs:
     needs: install
     uses: stampedeapp/actions/.github/workflows/aws-ecs-deploy.yml@main
     with:
+      ldt-env: "production"
       ldt-environment: "prod"
       stack-name: ${{ inputs.stack-name }}
       environment: "Production"
