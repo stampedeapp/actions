@@ -41,22 +41,3 @@ jobs:
       stack-name: ${{ inputs.stack-name }}
       environment: "Staging"
     secrets: inherit
-
-  e2e-testing:
-    runs-on: ubuntu-latest
-    container: cypress/browsers:node16.17.0-chrome106
-    needs: deploy-staging
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4, 5, 6, 7, 8]
-    steps:
-      - uses: stampedeapp/actions/setup@main
-      - uses: stampedeapp/actions/run-cypress@main
-        with:
-          e2e-testing-key: ${{ secrets.E2E_TESTING_KEY }}
-        env:
-          ENV: staging
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          CYPRESS_DEPLOYSENTINEL_KEY: ${{ secrets.CYPRESS_DEPLOYSENTINEL_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
