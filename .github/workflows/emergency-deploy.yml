@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest-16-cores
     environment: ${{ inputs.environment }}
     concurrency:
-      group: ${{inputs.environment}}-${{ inputs.stack-name }}
+      group: ${{ github.workflow }}-${{inputs.environment}}-${{ inputs.stack-name }}
     steps:
       - uses: stampedeapp/actions/deploy@main
         with:
