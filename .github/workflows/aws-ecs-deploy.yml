@@ -53,7 +53,7 @@ jobs:
         with:
           environment: ${{ inputs.ldt-environment }}
 
-  docker-build:
+  docker:
     runs-on: ubuntu-latest-16-cores
     environment: ${{ inputs.environment }}
     needs: codefreeze
