@@ -40,4 +40,5 @@ jobs:
       ldt-environment: "staging"
       stack-name: ${{ inputs.stack-name }}
       environment: "Staging"
+      run-e2e-tests: true
     secrets: inherit

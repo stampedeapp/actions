@@ -42,8 +42,8 @@ jobs:
     secrets: inherit
     uses: stampedeapp/actions/.github/workflows/aws-ecs-deploy.yml@main
     with:
+      run-e2e-tests: ${{ inputs.run-e2e-tests }}
       ldt-env: "staging"
       ldt-environment: "staging"
       stack-name: ${{ inputs.stack-name }}
       environment: "Staging"
-      run-e2e-tests: ${{ inputs.run-e2e-tests }}
