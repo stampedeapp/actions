@@ -27,6 +27,11 @@ on:
         required: false
         description: Should we run e2e tests?
         default: false
+      check-code-freeze:
+        type: string
+        required: false
+        description: Should we check code freeze?
+        default: true
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.NPM_READONLY_TOKEN }}
@@ -37,6 +42,7 @@ jobs:
   codefreeze:
     runs-on: ubuntu-latest
     name: "Run Code Freeze check"
+    if: ${{ inputs.check-code-freeze == 'true' }}
     steps:
       - uses: stampedeapp/actions/check-code-freeze@main
         with:

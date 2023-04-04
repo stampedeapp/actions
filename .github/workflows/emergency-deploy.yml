@@ -47,4 +47,5 @@ jobs:
       ldt-environment: "prod"
       stack-name: ${{ inputs.stack-name }}
       environment: "Production"
+      check-code-freeze: "false"
     secrets: inherit
