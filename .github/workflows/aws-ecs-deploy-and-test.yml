@@ -124,3 +124,30 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_DEPLOYSENTINEL_KEY: ${{ secrets.CYPRESS_DEPLOYSENTINEL_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  report-deploy-time:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - uses: stampedeapp/actions/setup@main
+
+      - name: Calculate deploy time
+        shell: bash
+        run: |
+          GIT_COMMIT_TIME_SECONDS=$(git show -s --format=%ct)
+          CURRENT_TIME_SECONDS=$(date +%s)
+          echo "DEPLOYMENT_TIME_SECONDS=$(($CURRENT_TIME_SECONDS - $GIT_COMMIT_TIME_SECONDS))" >> $GITHUB_ENV
+
+      - name: Report deploy time
+        uses: masci/datadog@v1
+        with:
+          api-key: ${{ secrets.DATADOG_API_KEY }}
+          metrics: |
+            - type: gauge
+              name: ci.merge_commit_to_deploy_time
+              value: ${{ env.DEPLOYMENT_TIME_SECONDS }}
+              tags:
+                - "repo:${{ github.repository }}"
+                - "service:${{ github.event.repository.name }}"
+                - "branch:${{ github.ref }}"
+                - "environment:${{ inputs.environment }}"
