@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.0
+        uses: actions/checkout@v3.5.1
 
       - name: "Check file existence"
         uses: andstor/file-existence-action@v2
@@ -54,7 +54,7 @@ jobs:
       matrix:
         environment: ["dev", "staging", "prod"]
     steps:
-      - uses: actions/checkout@v3.5.0
+      - uses: actions/checkout@v3.5.1
       - uses: stampedeapp/actions/cloudformation-validate@main
         with:
           environment: ${{ matrix.environment }}
