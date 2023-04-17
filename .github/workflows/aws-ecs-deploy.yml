@@ -42,11 +42,12 @@ jobs:
   codefreeze:
     runs-on: ubuntu-latest
     name: "Run Code Freeze check"
-    if: ${{ inputs.check-code-freeze == 'true' }}
     steps:
       - uses: stampedeapp/actions/check-code-freeze@main
+        if: ${{ inputs.check-code-freeze == 'true' }}
         with:
           github-token: ${{ secrets.WORKFLOW_CALL_TOKEN }}
+      - run: echo 'Done'
 
   cloudformation:
     runs-on: ubuntu-latest
