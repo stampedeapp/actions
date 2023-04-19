@@ -60,7 +60,7 @@ jobs:
           environment: ${{ inputs.ldt-environment }}
 
   docker:
-    runs-on: ubuntu-latest-16-cores
+    runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     name: "Build Dockerfile"
     steps:
