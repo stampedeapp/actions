@@ -37,19 +37,22 @@ jobs:
     with:
       test-setup-command: ${{ inputs.test-setup-command }}
 
-  deploy-staging:
-    needs: static
-    uses: stampedeapp/actions/.github/workflows/aws-ecs-deploy.yml@main
-    with:
-      run-e2e-tests: ${{ inputs.run-e2e-tests }}
-      ldt-env: "staging"
-      ldt-environment: "staging"
-      stack-name: ${{ inputs.stack-name }}
-      environment: "Staging"
-    secrets: inherit
+  # Temporarily disabled during LME ballot code freeze.
+  # Uncomment these lines when unfreezing.
+
+  # deploy-staging:
+  #   needs: static
+  #   uses: stampedeapp/actions/.github/workflows/aws-ecs-deploy.yml@main
+  #   with:
+  #     run-e2e-tests: ${{ inputs.run-e2e-tests }}
+  #     ldt-env: "staging"
+  #     ldt-environment: "staging"
+  #     stack-name: ${{ inputs.stack-name }}
+  #     environment: "Staging"
+  #   secrets: inherit
 
   deploy-production:
-    needs: deploy-staging
+    # needs: deploy-staging
     uses: stampedeapp/actions/.github/workflows/aws-ecs-deploy.yml@main
     with:
       ldt-env: "production"
