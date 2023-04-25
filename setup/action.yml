@@ -8,7 +8,7 @@ inputs:
     required: false
   ref:
     description: The branch, tag or SHA to checkout.
-    default: ''
+    default: ""
     required: false
 
 runs:
@@ -36,6 +36,5 @@ runs:
         node-version-file: ".nvmrc"
         registry-url: "https://registry.npmjs.org"
     - name: Install Dependencies
-      if: ${{ steps.cache.outputs.cache-hit != 'true' }}
       run: yarn --frozen-lockfile --quiet --production=${{ inputs.production }}
       shell: bash
