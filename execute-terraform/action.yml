@@ -13,15 +13,34 @@ inputs:
     description: If true, just runs terraform plan
     default: "false"
     required: false
+  workspace:
+    description: If set, select the workspace to work in.
+    required: false
+  working-directory:
+    description: The working directory to run terraform in.
+    default: "."
+    required: false
 
 runs:
   using: composite
+  defaults:
+    run:
+      working-directory: ${{ inputs.working-directory }}
   steps:
     - uses: actions/checkout@v3.5.0
     - uses: hashicorp/setup-terraform@v2
       with:
         cli_config_credentials_token: ${{ inputs.cli_config_credentials_token }}
         terraform_wrapper: false
+
+    - name: Terraform Format
+      id: format
+      run: terraform fmt -check
+
+    - name: Terraform workspace
+      id: set-workspace
+      if: ${{ inputs.workspace != '' }}
+      run: terraform workspace select ${{ inputs.workspace }}
 
     - name: Terraform Init
       shell: bash
