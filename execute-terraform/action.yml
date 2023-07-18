@@ -37,7 +37,7 @@ runs:
       id: format
       run: terraform fmt -check
 
-    - name: Terraform workspace
+    - name: Terraform Workspace
       id: set-workspace
       if: ${{ inputs.workspace != '' }}
       run: terraform workspace select ${{ inputs.workspace }}
