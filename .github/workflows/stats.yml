@@ -32,7 +32,7 @@ jobs:
   typescript-percent:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v4.0.0
       - name: Get typescript percent
         run: |
           export percent=$(echo "$(find src -name '*.ts' | wc -l | xargs) / $(find src -name '*.[tj]s' | wc -l | xargs) * 100" | bc -l)
