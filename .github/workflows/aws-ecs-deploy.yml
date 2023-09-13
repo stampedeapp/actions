@@ -132,7 +132,7 @@ jobs:
 
       - name: Build, tag, and push docker image to Amazon ECR Public
         id: build-push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
