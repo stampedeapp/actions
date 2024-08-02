@@ -1,3 +1,5 @@
+ARCHIVED - actions now live in their respective repositories (e.g. [backend](https://github.com/stampedeapp/backend) or [web](https://github.com/stampedeapp/web))
+
 # Github Actions
 
 Repository for storing re-usable github actions. These should be generic and publically usable.
